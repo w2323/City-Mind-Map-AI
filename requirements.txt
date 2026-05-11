@@ -1,0 +1,9 @@
+# CityMind — Requirements
+# No external ML or algorithm libraries (project constraint).
+# Only standard Python libraries + pytest for testing.
+
+pytest>=7.0
+fastapi
+uvicorn
+streamlit
+requests

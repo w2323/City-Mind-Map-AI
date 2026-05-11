@@ -1,0 +1,6 @@
+# challenges package — CityMind challenge implementations
+from challenges.layout_planning import CSPSolver
+from challenges.road_optimization import build_road_network
+from challenges.ambulance_placement import place_ambulances, place_ambulances_fast
+from challenges.emergency_routing import AStarRouter, create_router
+from challenges.crime_prediction import run_crime_risk_pipeline, deploy_police_officers
