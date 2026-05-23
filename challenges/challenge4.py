@@ -1,13 +1,4 @@
-# emergency_routing.py — Challenge 4: Emergency Routing via Dynamic A*
-# A* search with event-driven replanning when roads are blocked.
-#
-# Design note: For dynamic environments, advanced alternatives exist:
-#   - D* Lite: Incrementally repairs shortest path trees when edge costs change
-#   - Lifelong Planning A* (LPA*): Maintains consistent g-values across changes
-# However, for a 225-node grid, full A* re-computation is fast enough (~1ms)
-# and simpler to implement, validate, and explain in a viva.
-#
-# All algorithms implemented from scratch — no external pathfinding libraries.
+# challenge4.py — Challenge 4: Emergency Routing via Dynamic A* search
 
 import math
 import heapq
@@ -15,12 +6,7 @@ from core.city_graph import CityGraph
 from config.simulation_config import SimConfig
 
 
-# ──────────────────────────────────────────────────────────
-# Heuristic function — Euclidean distance
-# Admissible because: straight-line distance <= actual road cost
-# (minimum edge cost is 0.8, and grid spacing is 1.0)
-# Manhattan would over-estimate with diagonal edges (cost 1.4)
-# ──────────────────────────────────────────────────────────
+
 def heuristic(graph: CityGraph, node_id: int, goal_id: int) -> float:
     """Euclidean distance heuristic. Admissible and consistent for this grid."""
     n = graph.nodes[node_id]
@@ -54,7 +40,7 @@ class AStarRouter:
         # Register as observer for road block events
         self.graph.register_observer(self._on_road_blocked)
 
-    # ── Mission setup ───────────────────────────────────────
+
 
     def set_mission(self, start_id: int, civilian_ids: list):
         """Initialize a rescue mission from start_id visiting all civilian_ids in sequence."""
@@ -63,7 +49,7 @@ class AStarRouter:
         self.visited = []
         self._plan_next_leg()
 
-    # ── Path planning ───────────────────────────────────────
+
 
     def _plan_next_leg(self):
         """Plan route from current position to next unvisited civilian."""
@@ -88,7 +74,7 @@ class AStarRouter:
                 f"{len(path)} steps"
             )
 
-    # ── A* algorithm — from scratch ─────────────────────────
+
 
     def astar(self, start_id: int, goal_id: int) -> list:
         """
@@ -142,7 +128,7 @@ class AStarRouter:
         path.reverse()
         return path
 
-    # ── Observer callback — road block handler ──────────────
+
 
     def _on_road_blocked(self, id_a: int, id_b: int):
         """
@@ -167,7 +153,7 @@ class AStarRouter:
                 return True
         return False
 
-    # ── Step execution ──────────────────────────────────────
+
 
     def advance_one_step(self) -> int:
         """
@@ -189,7 +175,7 @@ class AStarRouter:
 
         return self.current_pos
 
-    # ── Serialization ───────────────────────────────────────
+
 
     def to_dict(self) -> dict:
         """Serialize router state for API / frontend."""
@@ -202,9 +188,7 @@ class AStarRouter:
         }
 
 
-# ──────────────────────────────────────────────────────────
-# Entry point — simulation creates router here
-# ──────────────────────────────────────────────────────────
+
 def create_router(graph: CityGraph) -> AStarRouter:
     """Create and return an A* router bound to the shared graph."""
     return AStarRouter(graph)

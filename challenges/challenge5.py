@@ -1,19 +1,4 @@
-# crime_prediction.py — Challenge 5: Crime Risk Prediction
-# K-Means clustering (unsupervised) + Decision Tree (supervised classification)
-#
-# Pipeline:
-#   1. Feature engineering: population density + industrial proximity
-#   2. K-Means clustering (k=3) to discover natural groupings
-#   3. Synthetic crime dataset generation using cluster + rule-based labels
-#   4. Decision Tree classifier to predict HIGH / MEDIUM / LOW risk
-#   5. Update graph node risk levels → affects edge costs globally
-#
-# Decision Tree chosen over KNN for better interpretability:
-#   - Explainable feature splits and thresholds
-#   - Easy to defend in viva ("if pop_density > 0.5 AND industrial_proximity > 0.3 → HIGH")
-#   - No distance computation at prediction time
-#
-# All algorithms implemented from scratch — no sklearn.
+# challenge5.py — Challenge 5: Crime Risk Prediction (ML)
 
 import math
 import random
@@ -22,19 +7,13 @@ from core.city_graph import CityGraph
 from config.simulation_config import SimConfig
 
 
-# ──────────────────────────────────────────────────────────
-# Euclidean distance helper
-# ──────────────────────────────────────────────────────────
+
 def euclidean(a: list, b: list) -> float:
     """Euclidean distance between two feature vectors."""
     return math.sqrt(sum((x - y) ** 2 for x, y in zip(a, b)))
 
 
-# ──────────────────────────────────────────────────────────
-# Feature Engineering
-# f1 = normalized population density (0 to 1)
-# f2 = industrial proximity (reciprocal of Dijkstra distance)
-# ──────────────────────────────────────────────────────────
+
 def compute_features(graph: CityGraph) -> dict:
     """
     Compute feature vectors for all nodes.
@@ -60,9 +39,7 @@ def compute_features(graph: CityGraph) -> dict:
     return features
 
 
-# ──────────────────────────────────────────────────────────
-# K-Means Clustering — from scratch
-# ──────────────────────────────────────────────────────────
+
 class KMeans:
     """
     K-Means clustering algorithm (unsupervised).
@@ -120,9 +97,7 @@ class KMeans:
         return dists.index(min(dists))
 
 
-# ──────────────────────────────────────────────────────────
-# Identify high-risk cluster (highest centroid feature sum)
-# ──────────────────────────────────────────────────────────
+
 def _identify_high_risk_cluster(kmeans: KMeans) -> int:
     """Find the cluster with highest combined population density + industrial proximity."""
     scores = [(c[0] + c[1], ci) for ci, c in enumerate(kmeans.centroids)]
@@ -130,9 +105,7 @@ def _identify_high_risk_cluster(kmeans: KMeans) -> int:
     return scores[0][1]
 
 
-# ──────────────────────────────────────────────────────────
-# Synthetic Crime Dataset Generation
-# ──────────────────────────────────────────────────────────
+
 def generate_crime_dataset(graph: CityGraph, features: dict, kmeans: KMeans) -> list:
     """
     Generate labeled crime risk dataset using rule-based ground truth.
@@ -163,15 +136,7 @@ def generate_crime_dataset(graph: CityGraph, features: dict, kmeans: KMeans) -> 
     return dataset
 
 
-# ──────────────────────────────────────────────────────────
-# Decision Tree Classifier — from scratch
-#
-# Chosen over KNN for explainability:
-#   - Each node in the tree represents a feature split with a threshold
-#   - Easy to visualize and explain: "if pop_density > 0.5 → HIGH"
-#   - No distance computation at prediction time
-#   - Interpretable decision rules for viva defense
-# ──────────────────────────────────────────────────────────
+
 class DecisionTreeClassifier:
     """
     Decision Tree classifier implemented from scratch.
@@ -195,7 +160,7 @@ class DecisionTreeClassifier:
         """Predict class label for a single feature vector."""
         return self._traverse(self.tree, feature_vec)
 
-    # ── Gini Impurity ───────────────────────────────────────
+
 
     def _gini(self, groups: list, classes: list) -> float:
         """
@@ -220,7 +185,7 @@ class DecisionTreeClassifier:
             gini += (1.0 - score) * (size / total)
         return gini
 
-    # ── Find best split ─────────────────────────────────────
+
 
     def _best_split(self, dataset: list) -> dict:
         """
@@ -263,7 +228,7 @@ class DecisionTreeClassifier:
 
         return best if "feature_index" in best else None
 
-    # ── Build tree recursively ──────────────────────────────
+
 
     def _build_tree(self, dataset: list, depth: int) -> dict:
         """
@@ -301,7 +266,7 @@ class DecisionTreeClassifier:
         priority = {"HIGH": 3, "MEDIUM": 2, "LOW": 1}
         return max(counts.keys(), key=lambda x: (counts[x], priority.get(x, 0)))
 
-    # ── Prediction traversal ────────────────────────────────
+
 
     def _traverse(self, node: dict, feature_vec: list) -> str:
         """Traverse the tree to make a prediction."""
@@ -313,7 +278,7 @@ class DecisionTreeClassifier:
         else:
             return self._traverse(node["right"], feature_vec)
 
-    # ── Tree explanation (for viva) ─────────────────────────
+
 
     def explain(self, depth: int = 0, node: dict = None) -> str:
         """
@@ -339,9 +304,7 @@ class DecisionTreeClassifier:
         return result
 
 
-# ──────────────────────────────────────────────────────────
-# Full ML Pipeline — run once during initialization
-# ──────────────────────────────────────────────────────────
+
 def run_crime_risk_pipeline(graph: CityGraph) -> tuple:
     """
     Execute the complete crime risk prediction pipeline:
@@ -380,12 +343,7 @@ def run_crime_risk_pipeline(graph: CityGraph) -> tuple:
     return kmeans, dt
 
 
-# ──────────────────────────────────────────────────────────
-# Police Officer Deployment
-# The city has 10 police officers. They are allocated to the
-# highest-risk zones based on predicted risk level and
-# population density.
-# ──────────────────────────────────────────────────────────
+
 def deploy_police_officers(graph: CityGraph,
                            num_officers: int = None) -> list:
     """

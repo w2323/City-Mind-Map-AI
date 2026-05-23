@@ -1,0 +1,48 @@
+06:58:29 | [INIT] [SIMULATION] Initializing CityMind simulation...
+06:58:29 | [INIT] [LAYOUT    ] Running CSP solver for city layout...
+06:58:29 | [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+06:58:29 | [INIT] [ROADS     ] Building road network (MST + redundancy)...
+06:58:29 | [INIT] [ROADS     ] Road network built. 254 active edges.
+06:58:29 | [INIT] [ML        ] Running crime risk prediction pipeline...
+06:58:29 | [INIT] [ML        ] Crime risk prediction complete. HIGH=147, MEDIUM=0, LOW=78
+06:58:29 | [INIT] [ML        ] Decision Tree rules:
+IF population_density <= 0.450 (gini=0.034):
+  IF industrial_proximity <= 0.750 (gini=0.000):
+    → PREDICT: LOW
+  ELSE:
+    → PREDICT: HIGH
+ELSE:
+  → PREDICT: HIGH
+
+06:58:29 | [INIT] [ML        ] 10 police officers deployed to nodes: M5, K9, B7, F5, G11, F4, K4, I5, E7, G9
+06:58:29 | [INIT] [AMBULANCE ] Running GA for ambulance placement...
+06:58:50 | [INIT] [AMBULANCE ] Ambulances placed at nodes ['D11', 'E6', 'H8'] (fitness=30.400)
+06:58:50 | [INIT] [ROUTING   ] Creating A* emergency router...
+06:58:50 | [INIT] [ROUTING   ] Mission set. Start: node E3. Civilians at: ['F14', 'C14', 'O10', 'C10', 'M10']
+06:58:50 | [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+06:59:13 | [INIT] [FLOOD     ] GOD MODE: Disastrous flood unleashed at E12! All adjacent roads blocked.
+06:59:13 | [STEP 01] [SIMULATION] --- Step 1 ---
+06:59:13 | [STEP 01] [ROUTING   ] Team moved to node E2
+06:59:13 | [STEP 01] [ROUTING   ] ROUTE PLANNED: E3 -> F14, 15 steps
+06:59:13 | [STEP 01] [ROUTING   ] REPLANNING: Road (E12 <-> F12) blocked on current route. Recalculating from node E3.
+06:59:13 | [STEP 01] [ROUTING   ] WARNING: No path to civilian at node F14. Skipping.
+06:59:13 | [STEP 01] [ROUTING   ] WARNING: No path to civilian at node C14. Skipping.
+06:59:13 | [STEP 01] [ROUTING   ] ROUTE PLANNED: E3 -> O10, 26 steps
+07:02:53 | [STEP 01] [FLOOD     ] GOD MODE: Disastrous flood unleashed at N7! All adjacent roads blocked.
+07:02:53 | [STEP 02] [SIMULATION] --- Step 2 ---
+07:02:53 | [STEP 02] [ROUTING   ] Team moved to node E3
+07:02:53 | [STEP 02] [ROUTING   ] REPLANNING: Road (N6 <-> N7) blocked on current route. Recalculating from node E2.
+07:02:53 | [STEP 02] [ROUTING   ] WARNING: No path to civilian at node O10. Skipping.
+07:02:53 | [STEP 02] [ROUTING   ] ROUTE PLANNED: E2 -> C10, 13 steps
+07:03:00 | [STEP 02] [FLOOD     ] GOD MODE: Disastrous flood unleashed at C8! All adjacent roads blocked.
+07:03:00 | [STEP 03] [SIMULATION] --- Step 3 ---
+07:03:00 | [STEP 03] [FLOOD     ] Road between H9 and H10 flooded!
+07:03:00 | [STEP 03] [ROUTING   ] Team moved to node E2
+07:03:00 | [STEP 03] [ROUTING   ] REPLANNING: Road (C7 <-> C8) blocked on current route. Recalculating from node E3.
+07:03:00 | [STEP 03] [ROUTING   ] WARNING: No path to civilian at node C10. Skipping.
+07:03:00 | [STEP 03] [ROUTING   ] ROUTE PLANNED: E3 -> M10, 20 steps
+07:03:04 | [STEP 03] [FLOOD     ] GOD MODE: Disastrous flood unleashed at M8! All adjacent roads blocked.
+07:03:04 | [STEP 04] [SIMULATION] --- Step 4 ---
+07:03:04 | [STEP 04] [ROUTING   ] REPLANNING: Road (M7 <-> M8) blocked on current route. Recalculating from node E2.
+07:03:04 | [STEP 04] [ROUTING   ] WARNING: No path to civilian at node M10. Skipping.
+07:03:04 | [STEP 04] [ROUTING   ] MISSION COMPLETE: All civilians reached.

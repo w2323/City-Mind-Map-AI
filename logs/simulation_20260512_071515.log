@@ -1,0 +1,154 @@
+07:15:15 | [INIT] [SIMULATION] Initializing CityMind simulation...
+07:15:15 | [INIT] [LAYOUT    ] Running CSP solver for city layout...
+07:15:15 | [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+07:15:15 | [INIT] [ROADS     ] Building road network (MST + redundancy)...
+07:15:15 | [INIT] [ROADS     ] Road network built. 254 active edges.
+07:15:15 | [INIT] [ML        ] Running crime risk prediction pipeline...
+07:15:15 | [INIT] [ML        ] Crime risk prediction complete. HIGH=147, MEDIUM=0, LOW=78
+07:15:15 | [INIT] [ML        ] Decision Tree rules:
+IF population_density <= 0.450 (gini=0.034):
+  IF industrial_proximity <= 0.750 (gini=0.000):
+    → PREDICT: LOW
+  ELSE:
+    → PREDICT: HIGH
+ELSE:
+  → PREDICT: HIGH
+
+07:15:15 | [INIT] [ML        ] 10 police officers deployed to nodes: M5, K9, B7, F5, G11, F4, K4, I5, E7, G9
+07:15:15 | [INIT] [AMBULANCE ] Running GA for ambulance placement...
+07:15:36 | [INIT] [AMBULANCE ] Ambulances placed at nodes ['D11', 'E6', 'H8'] (fitness=30.400)
+07:15:36 | [INIT] [ROUTING   ] Creating A* emergency router...
+07:15:36 | [INIT] [ROUTING   ] Mission set. Start: node E3. Civilians at: ['F14', 'C14', 'O10', 'C10', 'M10']
+07:15:36 | [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+07:15:55 | [STEP 01] [SIMULATION] --- Step 1 ---
+07:15:55 | [STEP 01] [ROUTING   ] Team moved to node E4
+07:15:55 | [STEP 01] [ROUTING   ] ROUTE PLANNED: E3 -> F14, 15 steps
+07:15:56 | [STEP 02] [SIMULATION] --- Step 2 ---
+07:15:56 | [STEP 02] [ROUTING   ] Team moved to node E5
+07:15:57 | [STEP 03] [SIMULATION] --- Step 3 ---
+07:15:57 | [STEP 03] [FLOOD     ] Road between N8 and N9 flooded!
+07:15:57 | [STEP 03] [ROUTING   ] Team moved to node E6
+07:15:58 | [STEP 04] [SIMULATION] --- Step 4 ---
+07:15:58 | [STEP 04] [ROUTING   ] Team moved to node E7
+07:15:58 | [STEP 05] [SIMULATION] --- Step 5 ---
+07:15:58 | [STEP 05] [FLOOD     ] Road between D1 and D2 flooded!
+07:15:58 | [STEP 05] [ROUTING   ] Team moved to node E8
+07:16:00 | [STEP 05] [AMBULANCE ] Ambulances re-evaluated. Now at ['E6', 'H8', 'D11']
+07:16:00 | [STEP 05] [ML        ] Crime risk re-evaluated.
+07:16:00 | [STEP 05] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:01 | [STEP 06] [SIMULATION] --- Step 6 ---
+07:16:01 | [STEP 06] [ROUTING   ] Team moved to node E9
+07:16:01 | [STEP 07] [SIMULATION] --- Step 7 ---
+07:16:01 | [STEP 07] [ROUTING   ] Team moved to node E10
+07:16:02 | [STEP 08] [SIMULATION] --- Step 8 ---
+07:16:02 | [STEP 08] [ROUTING   ] Team moved to node F10
+07:16:03 | [STEP 09] [SIMULATION] --- Step 9 ---
+07:16:03 | [STEP 09] [ROUTING   ] Team moved to node F11
+07:16:04 | [STEP 10] [SIMULATION] --- Step 10 ---
+07:16:04 | [STEP 10] [ROUTING   ] Team moved to node F12
+07:16:05 | [STEP 10] [AMBULANCE ] Ambulances re-evaluated. Now at ['H8', 'E6', 'D11']
+07:16:05 | [STEP 10] [ML        ] Crime risk re-evaluated.
+07:16:05 | [STEP 10] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:06 | [STEP 11] [SIMULATION] --- Step 11 ---
+07:16:06 | [STEP 11] [ROUTING   ] Team moved to node E12
+07:16:07 | [STEP 12] [SIMULATION] --- Step 12 ---
+07:16:07 | [STEP 12] [ROUTING   ] Team moved to node E13
+07:16:08 | [STEP 13] [SIMULATION] --- Step 13 ---
+07:16:08 | [STEP 13] [ROUTING   ] Team moved to node E14
+07:16:09 | [STEP 14] [SIMULATION] --- Step 14 ---
+07:16:09 | [STEP 14] [ROUTING   ] Team moved to node F14
+07:16:09 | [STEP 14] [ROUTING   ] CIVILIAN REACHED at node F14
+07:16:09 | [STEP 14] [ROUTING   ] ROUTE PLANNED: F14 -> C14, 6 steps
+07:16:10 | [STEP 15] [SIMULATION] --- Step 15 ---
+07:16:10 | [STEP 15] [ROUTING   ] Team moved to node F15
+07:16:11 | [STEP 15] [AMBULANCE ] Ambulances re-evaluated. Now at ['E6', 'D11', 'H8']
+07:16:11 | [STEP 15] [ML        ] Crime risk re-evaluated.
+07:16:11 | [STEP 15] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:12 | [STEP 16] [SIMULATION] --- Step 16 ---
+07:16:12 | [STEP 16] [FLOOD     ] Road between M2 and N2 flooded!
+07:16:12 | [STEP 16] [ROUTING   ] Team moved to node E15
+07:16:13 | [STEP 17] [SIMULATION] --- Step 17 ---
+07:16:13 | [STEP 17] [ROUTING   ] Team moved to node D15
+07:16:14 | [STEP 18] [SIMULATION] --- Step 18 ---
+07:16:14 | [STEP 18] [ROUTING   ] Team moved to node D14
+07:16:15 | [STEP 19] [SIMULATION] --- Step 19 ---
+07:16:15 | [STEP 19] [ROUTING   ] Team moved to node C14
+07:16:15 | [STEP 19] [ROUTING   ] CIVILIAN REACHED at node C14
+07:16:15 | [STEP 19] [ROUTING   ] WARNING: No path to civilian at node O10. Skipping.
+07:16:15 | [STEP 19] [ROUTING   ] ROUTE PLANNED: C14 -> C10, 19 steps
+07:16:16 | [STEP 20] [SIMULATION] --- Step 20 ---
+07:16:16 | [STEP 20] [ROUTING   ] Team moved to node C13
+07:16:17 | [STEP 20] [AMBULANCE ] Ambulances re-evaluated. Now at ['H8', 'D11', 'E6']
+07:16:17 | [STEP 20] [ML        ] Crime risk re-evaluated.
+07:16:17 | [STEP 20] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:20 | [STEP 21] [SIMULATION] --- Step 21 ---
+07:16:20 | [STEP 21] [ROUTING   ] Team moved to node C12
+07:16:21 | [STEP 22] [SIMULATION] --- Step 22 ---
+07:16:21 | [STEP 22] [FLOOD     ] Road between F7 and F8 flooded!
+07:16:21 | [STEP 22] [ROUTING   ] Team moved to node D12
+07:16:22 | [STEP 23] [SIMULATION] --- Step 23 ---
+07:16:22 | [STEP 23] [ROUTING   ] Team moved to node E12
+07:16:23 | [STEP 24] [SIMULATION] --- Step 24 ---
+07:16:23 | [STEP 24] [ROUTING   ] Team moved to node F12
+07:16:24 | [STEP 25] [SIMULATION] --- Step 25 ---
+07:16:24 | [STEP 25] [ROUTING   ] Team moved to node F11
+07:16:25 | [STEP 25] [AMBULANCE ] Ambulances re-evaluated. Now at ['H8', 'E6', 'D11']
+07:16:25 | [STEP 25] [ML        ] Crime risk re-evaluated.
+07:16:25 | [STEP 25] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:26 | [STEP 26] [SIMULATION] --- Step 26 ---
+07:16:26 | [STEP 26] [ROUTING   ] Team moved to node F10
+07:16:27 | [STEP 27] [SIMULATION] --- Step 27 ---
+07:16:27 | [STEP 27] [ROUTING   ] Team moved to node E10
+07:16:28 | [STEP 28] [SIMULATION] --- Step 28 ---
+07:16:28 | [STEP 28] [ROUTING   ] Team moved to node E9
+07:16:29 | [STEP 29] [SIMULATION] --- Step 29 ---
+07:16:29 | [STEP 29] [FLOOD     ] Road between D1 and E1 flooded!
+07:16:29 | [STEP 29] [ROUTING   ] Team moved to node E8
+07:16:29 | [STEP 30] [SIMULATION] --- Step 30 ---
+07:16:29 | [STEP 30] [ROUTING   ] Team moved to node E7
+07:16:31 | [STEP 30] [AMBULANCE ] Ambulances re-evaluated. Now at ['E6', 'D11', 'H8']
+07:16:31 | [STEP 30] [ML        ] Crime risk re-evaluated.
+07:16:31 | [STEP 30] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:32 | [STEP 31] [SIMULATION] --- Step 31 ---
+07:16:32 | [STEP 31] [FLOOD     ] Road between C4 and C5 flooded!
+07:16:32 | [STEP 31] [ROUTING   ] Team moved to node D7
+07:16:33 | [STEP 32] [SIMULATION] --- Step 32 ---
+07:16:33 | [STEP 32] [ROUTING   ] Team moved to node C7
+07:16:34 | [STEP 33] [SIMULATION] --- Step 33 ---
+07:16:34 | [STEP 33] [ROUTING   ] Team moved to node C8
+07:16:34 | [STEP 34] [SIMULATION] --- Step 34 ---
+07:16:34 | [STEP 34] [FLOOD     ] Road between O6 and O7 flooded!
+07:16:34 | [STEP 34] [ROUTING   ] Team moved to node D8
+07:16:35 | [STEP 35] [SIMULATION] --- Step 35 ---
+07:16:35 | [STEP 35] [ROUTING   ] Team moved to node D9
+07:16:37 | [STEP 35] [AMBULANCE ] Ambulances re-evaluated. Now at ['H8', 'E6', 'D11']
+07:16:37 | [STEP 35] [ML        ] Crime risk re-evaluated.
+07:16:37 | [STEP 35] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:38 | [STEP 36] [SIMULATION] --- Step 36 ---
+07:16:38 | [STEP 36] [FLOOD     ] Road between I10 and I11 flooded!
+07:16:38 | [STEP 36] [ROUTING   ] Team moved to node D10
+07:16:38 | [STEP 37] [SIMULATION] --- Step 37 ---
+07:16:38 | [STEP 37] [FLOOD     ] Road between K3 and K4 flooded!
+07:16:38 | [STEP 37] [ROUTING   ] Team moved to node C10
+07:16:38 | [STEP 37] [ROUTING   ] CIVILIAN REACHED at node C10
+07:16:38 | [STEP 37] [ROUTING   ] ROUTE PLANNED: C10 -> M10, 31 steps
+07:16:40 | [STEP 38] [SIMULATION] --- Step 38 ---
+07:16:40 | [STEP 38] [ROUTING   ] Team moved to node D10
+07:16:41 | [STEP 39] [SIMULATION] --- Step 39 ---
+07:16:41 | [STEP 39] [FLOOD     ] Road between E6 and E7 flooded!
+07:16:41 | [STEP 39] [ROUTING   ] Team moved to node D9
+07:16:42 | [STEP 40] [SIMULATION] --- Step 40 ---
+07:16:42 | [STEP 40] [ROUTING   ] Team moved to node D8
+07:16:43 | [STEP 40] [AMBULANCE ] Ambulances re-evaluated. Now at ['H8', 'E6', 'D11']
+07:16:43 | [STEP 40] [ML        ] Crime risk re-evaluated.
+07:16:43 | [STEP 40] [ML        ] Police officers re-deployed to updated risk zones.
+07:16:49 | [STEP 40] [FLOOD     ] GOD MODE: Disastrous flood unleashed at D6! All adjacent roads blocked.
+07:16:49 | [STEP 41] [SIMULATION] --- Step 41 ---
+07:16:49 | [STEP 41] [ROUTING   ] Team moved to node C8
+07:16:49 | [STEP 41] [ROUTING   ] REPLANNING: Road (D6 <-> D7) blocked on current route. Recalculating from node D8.
+07:16:49 | [STEP 41] [ROUTING   ] ROUTE PLANNED: D8 -> M10, 28 steps
+07:16:51 | [STEP 41] [FLOOD     ] GOD MODE: Disastrous flood unleashed at D7! All adjacent roads blocked.
+07:16:51 | [STEP 42] [SIMULATION] --- Step 42 ---
+07:16:51 | [STEP 42] [ROUTING   ] REPLANNING: Road (C7 <-> D7) blocked on current route. Recalculating from node C8.
+07:16:51 | [STEP 42] [ROUTING   ] WARNING: No path to civilian at node M10. Skipping.
+07:16:51 | [STEP 42] [ROUTING   ] MISSION COMPLETE: All civilians reached.

@@ -12,6 +12,8 @@ import LeftPanel from './components/LeftPanel';
 import GraphCanvas3D from './components/GraphCanvas3D';
 import RightPanel from './components/RightPanel';
 import HealthDashboard from './components/HealthDashboard';
+import EventFeedHUD from './components/EventFeedHUD';
+import { getLabelFromNode, getNodeIdFromLabel, runDijkstra, getPath } from './utils/pathfinding';
 
 export default function App() {
   const [booted, setBooted] = useState(false);
@@ -23,6 +25,16 @@ export default function App() {
   const [streetView, setStreetView] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(50);
+  const [coverageRadius, setCoverageRadius] = useState(5);
+  const [placementMode, setPlacementMode] = useState('Current');
+  const [roadMode, setRoadMode] = useState('Optimized (2-connected)');
+  const [algoMode, setAlgoMode] = useState('Single Algorithm');
+  const [gatesNodeLabel, setGatesNodeLabel] = useState('');
+  const [gatesNodeId, setGatesNodeId] = useState(null);
+  const [gatesPaths, setGatesPaths] = useState([]);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [godMode, setGodMode] = useState(false);
+  
   const [viewToggles, setViewToggles] = useState({
     roads: true,
     coverage: true,
@@ -67,9 +79,80 @@ export default function App() {
   }, []);
 
   const handleSelectNode = useCallback((nodeId) => {
+    if (godMode) {
+      sim.handleFloodNode(nodeId);
+      return;
+    }
     setSelectedNode(nodeId);
     setDrawerOpen(false); // Auto-close left drawer when selecting a node
-  }, []);
+  }, [godMode, sim]);
+
+  // ── Gates of Death Logic ──
+  useEffect(() => {
+    if (!booted || !sim.graph?.nodes || !sim.stats?.edgeList) return;
+    
+    // Clear paths/toasts by default
+    setGatesPaths([]);
+    setToastMessage(null);
+
+    const targetId = getNodeIdFromLabel(gatesNodeLabel, sim.graph.nodes);
+    setGatesNodeId(targetId);
+
+    if (targetId === null) return;
+    
+    const ambulances = sim.state?.ambulances || [];
+    if (ambulances.length === 0) return;
+
+    if (placementMode === 'Optimizing...') {
+      // Find closest ambulance
+      let bestAmb = null;
+      let minDistance = Infinity;
+      
+      for (const amb of ambulances) {
+        const { dist } = runDijkstra(sim.graph.nodes, sim.stats.edgeList, amb);
+        if (dist[targetId] < minDistance) {
+          minDistance = dist[targetId];
+          bestAmb = amb;
+        }
+      }
+      
+      if (bestAmb !== null) {
+        const ambLabel = getLabelFromNode(sim.graph.nodes[bestAmb]);
+        const targetLabel = getLabelFromNode(sim.graph.nodes[targetId]);
+        setToastMessage(`🚨 ${ambLabel} is the most optimized ambulance when gates of death are unleashed to ${targetLabel}!`);
+      }
+    } else if (placementMode === 'Best found') {
+      let bestAmb = null;
+      let minDistance = Infinity;
+      let bestPrev = null;
+      
+      for (const amb of ambulances) {
+        const { dist, prev } = runDijkstra(sim.graph.nodes, sim.stats.edgeList, amb);
+        if (dist[targetId] < minDistance) {
+          minDistance = dist[targetId];
+          bestAmb = amb;
+          bestPrev = prev;
+        }
+      }
+      
+      if (bestAmb !== null && bestPrev !== null) {
+        const path = getPath(bestPrev, targetId);
+        setGatesPaths([{ color: '#00ffff', path }]);
+      }
+    } else if (placementMode === 'All candidates') {
+      const allPaths = [];
+      const colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff8800', '#00ff88'];
+      
+      ambulances.forEach((amb, i) => {
+        const { prev } = runDijkstra(sim.graph.nodes, sim.stats.edgeList, amb);
+        const path = getPath(prev, targetId);
+        if (path.length > 0) {
+          allPaths.push({ color: colors[i % colors.length], path });
+        }
+      });
+      setGatesPaths(allPaths);
+    }
+  }, [placementMode, gatesNodeLabel, sim.graph, sim.stats, sim.state, booted]);
 
   // ── Error State ──
   if (sim.error && !sim.state) {
@@ -116,26 +199,105 @@ export default function App() {
   }
 
   // ── Main Dashboard ──
+  const renderCanvas = (overrideProps = {}) => (
+    <GraphCanvas3D
+      graph={sim.graph}
+      state={sim.state}
+      stats={sim.stats}
+      booted={booted}
+      selectedNode={selectedNode}
+      onSelectNode={handleSelectNode}
+      viewToggles={viewToggles}
+      simSpeed={simSpeed}
+      fpsRef={fpsRef}
+      streetView={streetView}
+      resetTrigger={resetTrigger}
+      onZoomChange={setZoomLevel}
+      coverageRadius={coverageRadius}
+      placementMode={placementMode}
+      roadMode={roadMode}
+      gatesNodeId={gatesNodeId}
+      gatesPaths={gatesPaths}
+      godMode={godMode}
+      {...overrideProps}
+    />
+  );
+
   return (
     <div className="app-shell">
       {/* Central Canvas (Hero Element) */}
       <div className="canvas-area">
-        <GraphCanvas3D
-          graph={sim.graph}
-          state={sim.state}
-          stats={sim.stats}
-          booted={booted}
-          selectedNode={selectedNode}
-          onSelectNode={handleSelectNode}
-          viewToggles={viewToggles}
-          simSpeed={simSpeed}
-          fpsRef={fpsRef}
-          streetView={streetView}
-          resetTrigger={resetTrigger}
-          onZoomChange={setZoomLevel}
-        />
+        {algoMode === 'Single Algorithm' && renderCanvas()}
+        {algoMode === 'Side-by-side Comparison' && (
+          <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+            <div style={{ flex: 1, position: 'relative' }}>
+              <div style={{ position: 'absolute', top: 80, left: 16, zIndex: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 12, borderRadius: 4, fontFamily: 'monospace' }}>MODE: All Roads</div>
+              {renderCanvas({ roadMode: 'All roads' })}
+            </div>
+            <div style={{ width: 2, background: 'var(--accent-cyan)', zIndex: 10 }} />
+            <div style={{ flex: 1, position: 'relative' }}>
+              <div style={{ position: 'absolute', top: 80, left: 16, zIndex: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 12, borderRadius: 4, fontFamily: 'monospace' }}>MODE: {roadMode}</div>
+              {renderCanvas()}
+            </div>
+          </div>
+        )}
+        {algoMode === 'Multi-view' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', width: '100%', height: '100%' }}>
+            <div style={{ position: 'relative', borderRight: '1px solid var(--accent-cyan)', borderBottom: '1px solid var(--accent-cyan)' }}>
+              <div style={{ position: 'absolute', top: 80, left: 16, zIndex: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 12, borderRadius: 4, fontFamily: 'monospace' }}>All Roads</div>
+              {renderCanvas({ roadMode: 'All roads' })}
+            </div>
+            <div style={{ position: 'relative', borderBottom: '1px solid var(--accent-cyan)' }}>
+              <div style={{ position: 'absolute', top: 80, left: 16, zIndex: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 12, borderRadius: 4, fontFamily: 'monospace' }}>MST Optimized</div>
+              {renderCanvas({ roadMode: 'Optimized (MST)' })}
+            </div>
+            <div style={{ position: 'relative', borderRight: '1px solid var(--accent-cyan)' }}>
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 12, borderRadius: 4, fontFamily: 'monospace' }}>2-Connected</div>
+              {renderCanvas({ roadMode: 'Optimized (2-connected)' })}
+            </div>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, padding: '4px 8px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 12, borderRadius: 4, fontFamily: 'monospace' }}>Ambulance Optimized</div>
+              {renderCanvas({ placementMode: 'Best found', roadMode: 'Optimized (2-connected)' })}
+            </div>
+          </div>
+        )}
         {booted && <Shockwave />}
       </div>
+
+      {/* Live Event Feed HUD */}
+      {booted && <EventFeedHUD events={sim.stats?.events} />}
+
+      {/* God Mode Toggle Button */}
+      {booted && (
+        <button
+          onClick={() => setGodMode(p => !p)}
+          style={{
+            position: 'fixed', bottom: 24, left: 320, // next to left panel
+            background: godMode ? 'rgba(255, 0, 85, 0.2)' : 'rgba(0, 255, 255, 0.1)',
+            border: `1px solid ${godMode ? 'var(--red-alert)' : 'var(--accent-cyan)'}`,
+            padding: '8px 16px', borderRadius: 8, color: '#fff',
+            fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600,
+            cursor: 'pointer', zIndex: 100, transition: 'all 0.2s',
+            boxShadow: godMode ? '0 0 15px rgba(255, 0, 85, 0.4)' : 'none',
+          }}
+        >
+          {godMode ? '🌊 GOD MODE: ACTIVE (Click nodes to flood)' : '⚡ ACTIVATE GOD MODE'}
+        </button>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)',
+          background: 'rgba(20, 10, 30, 0.85)', border: '1px solid var(--accent-cyan)',
+          padding: '12px 24px', borderRadius: '8px', zIndex: 100,
+          color: '#fff', fontFamily: "'JetBrains Mono', monospace", fontSize: 13,
+          boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)',
+          animation: 'fade-in 0.3s ease-out'
+        }}>
+          {toastMessage}
+        </div>
+      )}
 
       {/* Floating Top Nav Bar */}
       <TopBar stats={sim.stats} connected={sim.connected} fpsRef={fpsRef} className={uiIdle ? 'ui-hidden' : ''} onToggleDash={() => setDashOpen(!dashOpen)} />
@@ -156,6 +318,19 @@ export default function App() {
         stepping={sim.stepping}
         simSpeed={simSpeed}
         onSpeedChange={setSimSpeed}
+        placementMode={placementMode}
+        onPlacementModeChange={setPlacementMode}
+        roadMode={roadMode}
+        onRoadModeChange={setRoadMode}
+        gatesNodeLabel={gatesNodeLabel}
+        onGatesNodeChange={setGatesNodeLabel}
+        algoMode={algoMode}
+        onAlgoModeChange={setAlgoMode}
+        coverageRadius={coverageRadius}
+        onCoverageRadiusChange={setCoverageRadius}
+        streetView={streetView}
+        onToggleStreetView={() => setStreetView(s => !s)}
+        onResetView={() => setResetTrigger(t => t + 1)}
       />
 
       {/* Floating Right Inspector */}
@@ -173,49 +348,6 @@ export default function App() {
         <button className="zoom-controls__btn" onClick={() => setResetTrigger(t => t + 1)} title="Center View">🎯</button>
       </div>
 
-      {/* Floating Bottom Control Bar with Event Scrubber */}
-      <div className={`bottom-bar ${uiIdle ? 'ui-hidden' : ''}`} style={{ width: '90%', display: 'flex', flexDirection: 'column', height: 'auto', padding: '12px 28px', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <div className="bottom-bar__section">
-            <span style={{ fontWeight: 700, background: 'linear-gradient(90deg, #0066FF, #8B5CF6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              CITYMIND v3.0
-            </span>
-            <span style={{ color: 'rgba(0,0,0,0.1)' }}>|</span>
-            <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600 }}>Immersive Dashboard</span>
-          </div>
-          <div className="bottom-bar__section">
-            <button 
-              className={`sim-btn ${streetView ? 'sim-btn--primary' : 'sim-btn--secondary'}`} 
-              style={{ padding: '4px 12px', fontSize: 11, marginRight: '8px' }}
-              onClick={() => setStreetView(s => !s)}
-            >
-              {streetView ? 'EXIT STREET VIEW' : 'STREET LEVEL'}
-            </button>
-            <button 
-              className="sim-btn sim-btn--secondary" 
-              style={{ padding: '4px 12px', fontSize: 11 }}
-              onClick={() => setResetTrigger(t => t + 1)}
-            >
-              RESET VIEW
-            </button>
-            <span style={{ color: 'rgba(0,0,0,0.1)', marginLeft: '8px' }}>|</span>
-            <span style={{ fontSize: 12, fontWeight: 600 }}>{sim.stats?.totalNodes || 0} nodes / {sim.stats?.edgeList?.length || 0} edges</span>
-            <span style={{ color: 'rgba(0,0,0,0.1)' }}>|</span>
-            <span style={{ fontSize: 12, fontWeight: 600 }}>Speed: {simSpeed}x</span>
-          </div>
-        </div>
-        
-        {/* Timeline Scrubber */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', marginTop: 4, paddingTop: 8, borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-          <button className="sim-btn sim-btn--icon" style={{ width: 28, height: 28, fontSize: 12 }} title="Start">⏮</button>
-          <button className="sim-btn sim-btn--icon" style={{ width: 28, height: 28, fontSize: 12 }} title="Rewind 10s">⏪</button>
-          <button className="sim-btn sim-btn--icon" style={{ width: 32, height: 32, fontSize: 14 }} title="Play">▶</button>
-          <button className="sim-btn sim-btn--icon" style={{ width: 28, height: 28, fontSize: 12 }} title="Forward 10s">⏩</button>
-          <button className="sim-btn sim-btn--icon" style={{ width: 28, height: 28, fontSize: 12 }} title="End">⏭</button>
-          <input type="range" min="0" max="20" value={sim.stats?.step || 0} readOnly style={{ flex: 1, accentColor: 'var(--purple-pop)' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-tertiary)', minWidth: 60 }}>STEP {sim.stats?.step || 0}/20</span>
-        </div>
-      </div>
     </div>
   );
 }

@@ -35,23 +35,23 @@ class SimConfig:
 
     # ── CSP Layout Requirements (minimum counts) ────────────
     REQUIRED_COUNTS: dict = {
-        "RESIDENTIAL": 50,
-        "HOSPITAL": 18,
+        "RESIDENTIAL": 70,
+        "HOSPITAL": 6,
         "SCHOOL": 4,
-        "INDUSTRIAL": 5,
+        "INDUSTRIAL": 4,
         "POWER_PLANT": 2,
-        "AMBULANCE_DEPOT": 2,
+        "AMBULANCE_DEPOT": 3,
     }
 
     # ── CSP Constraint Thresholds ───────────────────────────
-    HOSPITAL_HOP_LIMIT: int = 3     # C2: residential must be within N hops of hospital
+    HOSPITAL_HOP_LIMIT: int = 5     # C2: residential must be within N hops of hospital
     INDUSTRIAL_HOP_LIMIT: int = 2   # C3: power plant must be within N hops of industrial
 
     # ── Road Network (Challenge 2) ──────────────────────────
     REDUNDANCY_EDGES: int = 30      # extra edges added after MST
 
     # ── Genetic Algorithm (Challenge 3) ─────────────────────
-    GA_NUM_AMBULANCES: int = 3
+    GA_NUM_AMBULANCES: int = 3      # Matches AMBULANCE_DEPOT count
     GA_POP_SIZE: int = 60
     GA_GENERATIONS: int = 200
     GA_MUTATION_RATE: float = 0.15
@@ -73,7 +73,7 @@ class SimConfig:
     NUM_POLICE_OFFICERS: int = 10
 
     # ── Simulation ──────────────────────────────────────────
-    MAX_STEPS: int = 20
+    MAX_STEPS: int = 100
     FLOOD_PROBABILITY: float = 0.30
     AMBULANCE_REEVAL_INTERVAL: int = 5   # re-evaluate ambulances every N steps
     RISK_REEVAL_INTERVAL: int = 5        # re-evaluate crime risk every N steps
@@ -91,3 +91,14 @@ class SimConfig:
 
     # ── Random Seed (None = non-deterministic) ──────────────
     SEED: int = None
+
+    # ── Spatial Distribution Constraints (Hybrid Urban Generator) ──
+    NUM_DISTRICTS: int = 4                     # Voronoi-like district regions
+    MIN_INDUSTRIAL_HOSPITAL_DIST: int = 3      # Manhattan distance
+    MIN_INDUSTRIAL_SCHOOL_DIST: int = 3        # Manhattan distance
+    MIN_DEPOT_DEPOT_DIST: int = 5              # Min Manhattan between ambulance depots
+    POWER_PLANT_INDUSTRIAL_DIST: int = 2       # Max hops from power plant to industrial
+    EMPTY_RATIO_MIN: float = 0.15              # 15-30% empty nodes target
+    EMPTY_RATIO_MAX: float = 0.30
+    MAX_QUADRANT_INFRA_RATIO: float = 0.40     # No district holds >40% of all infra
+    MAX_EMPTY_CLUSTER: int = 20                # Max connected-component size for EMPTY

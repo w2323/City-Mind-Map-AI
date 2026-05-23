@@ -1,0 +1,206 @@
+
+ARTIFICIAL INTELLIGENCE
+Semester Project
+CityMind
+An Urban Intelligence System
+
+BS Computer Science
+Group Project
+Duration: 3 Weeks
+Deadline: 10th May, 11:59 PM
+
+Department of Computer Science
+
+1. Project Overview
+
+This project presents you with a real-world problem. A mid-sized city is under pressure. It is growing fast, its infrastructure is aging, emergencies are becoming harder to manage, and city planners are struggling to keep up. Your task is to design and build an intelligent system called CityMind that helps city authorities make smarter, faster, and better-informed decisions.
+
+What makes this project different from a typical assignment is that you are not being told how to solve the problem. You are given the problem, and your group must figure out the solution. You will decide which algorithms to use, how to combine them, and how to justify those choices. The quality of your thinking matters as much as the quality of your code.
+
+The city is modeled as a grid-based graph where locations are nodes and roads are edges. Every location has properties such as type, population density, accessibility, and risk level. Your system will work on this shared city graph and must address five operational challenges described in Section 3.
+
+Important Note for Students
+Before writing a single line of code, your group must spend time understanding the problem and designing your solution. Your first graded deliverable is a design document, not code. This means you must think, discuss, and plan first. The implementation phase comes after your group has agreed on an approach and had it reviewed.
+
+2. The City Model
+
+The city is represented as a graph. You are free to choose the size and density of this graph, but it must be large enough to make the problems meaningful. Each node in the graph represents a location and stores the following information:
+
+Location type: Residential, Hospital, School, Industrial, Power Plant, or Ambulance Depot
+Population density: a numeric value indicating how many people live or work there
+Risk index: a value that can be updated dynamically during simulation
+Accessibility flag: indicates whether the location is currently reachable
+
+Edges between nodes represent roads. Each road has a travel cost. Standard roads have a cost of 1.0. Roads through residential zones cost 0.8. A road that has been blocked (due to flooding, an accident, or any environmental event) becomes impassable and must be treated as such by every part of your system immediately.
+
+This shared graph is the single source of truth for your entire system. No module is allowed to maintain its own separate copy of the city. If a road floods, every component of your system must know about it.
+
+3. The Five Challenges
+
+Your system must address the following five challenges. For each one, you are given the problem description and the constraints. Your group must determine the most appropriate approach from the AI and search techniques you have covered this semester. In your design document, you must justify why you chose a particular technique and why it is better suited to this problem than the alternatives.
+
+Challenge 1: City Layout Planning
+
+The city starts as an empty grid. Your system needs to place different types of locations (hospitals, schools, industrial zones, residential areas, power plants, ambulance depots) on this grid in a way that respects urban planning rules.
+
+The rules your layout must satisfy are:
+
+Industrial zones cannot be placed next to schools or hospitals
+Every residential area must be within three road hops of at least one hospital
+Power plants must be placed within 2 road hops of at least one Industrial zone, since they exist to supply power to industrial areas.
+The configuration must be checked for mathematical validity; if no valid layout is possible given the grid size and rules, your system must identify which specific rule is causing the conflict and propose minimum conflict solution.
+
+Think about the nature of this problem. What kind of problem is it? What approaches have you studied that deal with assigning values under constraints?
+
+Challenge 2: Road Network Optimization
+
+Once the city layout is established, your system must determine which roads should be built. The goal is to connect all locations using the minimum total road cost. However, there is a critical safety requirement: there must always be at least two completely independent routes between the Primary Hospital and the Ambulance Depot. If any single road fails, an alternative path must remain available.
+
+Think about what kind of optimization problem this is. What is the search space? How large is it? What approach allows you to find a globally optimal or near-optimal solution under this kind of constraint?
+
+Challenge 3: Ambulance Placement
+
+The city has three ambulances. These ambulances need to be positioned at locations on the grid such that no citizen is unreasonably far from help. The objective is to minimize the worst-case response time, meaning the position of the ambulance that is furthest from any citizen should be as close as possible.
+
+The number of possible placements grows quickly with grid size. Think about the scale of this search space. What strategies have you studied that can find good solutions efficiently without necessarily examining every possibility? Consider the role of randomness and evolution in search.
+
+Challenge 4: Emergency Routing Under Changing Conditions
+
+A medical team needs to travel through the city to reach a series of trapped civilians in sequence. The environment is not static: roads may flood or become blocked while the team is already on its way. The moment a road becomes impassable, the team must immediately recalculate the best available route to continue its mission.
+
+The constraints are:
+
+The team must reach all civilians, not just the nearest one
+Route recalculation must happen in real time whenever the environment changes
+The system must guarantee that it always finds the shortest currently available path, not just any path
+
+What kind of search is appropriate here? What property must your heuristic satisfy if you want a guarantee of finding the shortest path? How does your algorithm adapt when the graph changes mid-journey?
+
+Challenge 5: Crime Risk Prediction and Integration
+
+The city has 10 police officers to deploy. To allocate them intelligently, the system must analyze neighborhood data and predict where crime is most likely to occur.
+
+The pipeline for this challenge is as follows:
+
+Group the city's neighborhoods into clusters based on their population density and industrial proximity. This clustering should happen without using pre-labeled data.
+Using the city graph your group has already built, generate a synthetic crime dataset by assigning incident rates to each neighborhood based on its properties such as population density, location type, and proximity to industrial zones. You decide the logic for how these factors influence crime likelihood, but you must be able to justify that logic. Use this generated data to train a classification model that predicts the risk level (High, Medium, or Low) for each neighborhood.
+The predicted risk level for each location must be fed back into the shared city graph, where it acts as an additional cost multiplier. High-risk areas increase the effective travel cost for the pathfinding and ambulance placement challenges, reflecting the added difficulty of operating in those zones.
+
+Think carefully about what type of learning is involved in the first step and what type in the second step. Why are they different? How does integrating this output with the rest of the system demonstrate the value of machine learning in a decision-support pipeline?
+
+4. System Integration
+
+The five challenges are not independent modules. They must work together as a single coherent system. During evaluation, your system will be run through a simulation scenario that lasts 20 steps. In this scenario:
+
+The city layout determined by Challenge 1 sets the initial state of the grid
+The road network from Challenge 2 defines the travel graph
+The risk predictions from Challenge 5 update the grid weights at the start of the simulation
+As the simulation progresses, ambulance placements from Challenge 3 are re-evaluated as risk weights shift
+Meanwhile, flooding events occur randomly, forcing the dynamic router from Challenge 4 to adapt in real time
+
+Your system must demonstrate that all five components share the same underlying city graph and that changes in one part of the system are immediately visible to all other parts.
+
+5. Deliverables and Timeline
+
+The project is divided into three phases across three weeks. Each phase has a specific deliverable and contributes to your final marks.
+
+Phase 1: Problem Analysis and Design (Deadline: 26th April)
+
+Before writing any code, your group must submit a design document. This document should reflect genuine group discussion and thinking. It must include:
+
+A clear statement of how you understand each of the five challenges in your own words
+For each challenge, the AI technique or algorithm your group has chosen and a written justification for that choice. You must explain why this technique is appropriate and briefly compare it to at least one alternative you considered
+A description of how your shared city graph will be structured and how different modules will interact with it
+A rough sketch or wireframe of your planned user interface
+A work breakdown showing which group member is responsible for which parts
+
+Regarding AI Tools in Phase 1
+You are encouraged to use AI tools during Phase 1 for brainstorming and exploring ideas. However, the final document must reflect your group's own understanding. You will be asked to defend every decision in it during the viva. If your document proposes using an algorithm but no one in your group can explain how it works, that will be visible immediately during evaluation.
+
+Phase 2: Implementation (Deadline: 10th May)
+
+Develop the full system according to your design document. The implementation must include:
+
+All five challenge modules, each working correctly on its own
+A working integration of all modules through the shared city graph
+A visual interface that displays the city grid in real time and supports toggling between views: the road network, ambulance coverage, and crime risk heatmap
+A live event log that records decisions made by the system at each simulation step, for example noting when a road is blocked and how the router responded
+
+You are free to use AI tools to assist with writing and debugging code during this phase. However, your team must be able to trace through the execution of any algorithm in your system from first principles.
+
+Phase 3: Demonstration and Defense (Dead Week)
+
+Each group will present a live demonstration of their system. During the demonstration, you will be asked to run the simulation and show all components working together. Following the demonstration, each group member will face individual questions about the code and the reasoning behind design choices. You will also be given a live modification challenge: a constraint in one of the five challenges will be changed on the spot, and you will need to show how your system adapts.
+
+6. Evaluation Rubric
+
+The total marks for this project are 100. The rubric is shared with you openly so that you know exactly how your work will be assessed. There are no hidden criteria.
+
+#
+Component
+What We Are Looking For
+Marks
+1
+Design Document
+Clear problem understanding. Justified algorithm choices with comparison to alternatives. Realistic work breakdown. Shows evidence of group discussion, not just a generic AI-generated plan.
+15 marks
+2
+Technical Implementation
+Each of the five challenges must work correctly in isolation (4 marks each = 20 marks). The shared city graph must function correctly and updates must propagate across all modules (5 marks). System-level integration during the 20-step simulation must hold together (5 marks).
+30 marks
+3
+AI Concept Coverage
+The project must meaningfully demonstrate at least four distinct AI techniques from the course (search, constraint satisfaction, optimization, machine learning, etc.). Marks are awarded for correct application, not just presence. Using a technique in a way that does not fit the problem earns partial credit at best.
+20 marks
+4
+Viva and Live Defense
+Each member is asked individually to explain at least one algorithm in the system from first principles (10 marks). The group must complete the live modification challenge: a constraint is changed on the spot and the system must adapt and be explained (10 marks). Inability to explain code produced by the group results in significant mark reduction.
+20 marks
+5
+Interface and Presentation
+The visual interface must show the city grid with working overlay toggles for road network, ambulance coverage, and crime risk heatmap. The event log must function during the simulation. Creativity in interface design and extra features earn additional marks up to the full 15.
+15 marks
+Total
+100 marks
+
+How Individual Marks Are Determined Within a Group
+
+Group marks are awarded for the technical and integration components. Individual marks depend on the viva. A group member who cannot explain their contribution or the algorithms used in the project will receive reduced marks from the viva component, regardless of how well the system performs. The viva is your opportunity to demonstrate that you actually built and understood what your group submitted.
+
+
+7. Guidance on Using AI Tools
+
+You are not prohibited from using AI tools during this project. However, you should understand that the evaluation is designed with AI-generated code in mind. Here is what this means in practice.
+
+If your group submits a perfectly polished system that no one can explain during the viva, you will score poorly. The viva carries significant weight and is the primary mechanism for verifying genuine learning. The modification challenge is particularly useful here because it requires live adaptation, not recitation.
+
+The most productive way to use AI tools in this project is as a thinking partner during design, as a reference for syntax and debugging during implementation, and as a reviewer to check your logic once you have already written it. Groups that use AI to understand algorithms will benefit. Groups that use AI to avoid understanding algorithms will find the viva very difficult.
+
+Recommended Use of AI Tools by Phase
+Phase 1 (Design): Use AI to explore and compare approaches. Ask it to explain pros and cons of different algorithms for your specific problem. Then write your design document in your own words.
+Phase 2 (Implementation): Use AI to help with tricky syntax, debugging, or understanding how a library works. Do not paste the entire challenge description and ask for a complete solution. You will not be able to explain or modify code you did not understand when writing it.
+Phase 3 (Defense): Review your own code before the viva. Be ready to walk through any function and explain what it does, why it was written that way, and how it connects to the broader system.
+
+8. Quick Reference
+
+Item
+Details
+Group Size
+3 members
+Duration
+3 weeks
+Phase 1 Deadline
+End of Week 1 (Design Document)
+Phase 2 Deadline
+End of Week 2 (Working System)
+Phase 3 Deadline
+Week 3 (Demo and Viva)
+Total Marks
+100
+AI Tools
+Permitted with understanding
+Primary Language
+Your choice. Justify in design document.
+
+Final Reminder
+The best projects will be those where every group member can confidently sit down with the code and explain what is happening and why. The problem is genuinely complex. Solving it through real discussion and understanding is more valuable than submitting something impressive that no one in your group actually built.

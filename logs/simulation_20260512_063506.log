@@ -1,0 +1,61 @@
+06:35:06 | [INIT] [SIMULATION] Initializing CityMind simulation...
+06:35:06 | [INIT] [LAYOUT    ] Running CSP solver for city layout...
+06:35:06 | [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+06:35:06 | [INIT] [ROADS     ] Building road network (MST + redundancy)...
+06:35:06 | [INIT] [ROADS     ] Road network built. 254 active edges.
+06:35:06 | [INIT] [ML        ] Running crime risk prediction pipeline...
+06:35:06 | [INIT] [ML        ] Crime risk prediction complete. HIGH=147, MEDIUM=0, LOW=78
+06:35:06 | [INIT] [ML        ] Decision Tree rules:
+IF population_density <= 0.450 (gini=0.034):
+  IF industrial_proximity <= 0.750 (gini=0.000):
+    → PREDICT: LOW
+  ELSE:
+    → PREDICT: HIGH
+ELSE:
+  → PREDICT: HIGH
+
+06:35:06 | [INIT] [ML        ] 10 police officers deployed to nodes: M5, K9, B7, F5, G11, F4, K4, I5, E7, G9
+06:35:06 | [INIT] [AMBULANCE ] Running GA for ambulance placement...
+06:35:19 | [INIT] [AMBULANCE ] Ambulances placed at nodes ['D11', 'E6', 'H8'] (fitness=30.400)
+06:35:19 | [INIT] [ROUTING   ] Creating A* emergency router...
+06:35:19 | [INIT] [ROUTING   ] Mission set. Start: node E3. Civilians at: ['F14', 'C14', 'O10', 'C10', 'M10']
+06:35:19 | [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+06:41:14 | [INIT] [FLOOD     ] GOD MODE: Disastrous flood unleashed at E5! All adjacent roads blocked.
+06:41:14 | [STEP 01] [SIMULATION] --- Step 1 ---
+06:41:14 | [STEP 01] [ROUTING   ] Team moved to node D3
+06:41:14 | [STEP 01] [ROUTING   ] ROUTE PLANNED: E3 -> F14, 15 steps
+06:41:14 | [STEP 01] [ROUTING   ] REPLANNING: Road (E4 <-> E5) blocked on current route. Recalculating from node E3.
+06:41:14 | [STEP 01] [ROUTING   ] ROUTE PLANNED: E3 -> F14, 17 steps
+06:41:15 | [STEP 02] [SIMULATION] --- Step 2 ---
+06:41:15 | [STEP 02] [ROUTING   ] Team moved to node D4
+06:41:15 | [STEP 03] [SIMULATION] --- Step 3 ---
+06:41:15 | [STEP 03] [FLOOD     ] Road between N8 and N9 flooded!
+06:41:15 | [STEP 03] [ROUTING   ] Team moved to node D5
+06:41:15 | [STEP 04] [SIMULATION] --- Step 4 ---
+06:41:15 | [STEP 04] [ROUTING   ] Team moved to node D6
+06:41:28 | [STEP 04] [FLOOD     ] GOD MODE: Disastrous flood unleashed at D5! All adjacent roads blocked.
+06:41:28 | [STEP 05] [SIMULATION] --- Step 5 ---
+06:41:28 | [STEP 05] [FLOOD     ] Road between D1 and D2 flooded!
+06:41:28 | [STEP 05] [ROUTING   ] Team moved to node D7
+06:41:30 | [STEP 05] [AMBULANCE ] Ambulances re-evaluated. Now at ['E6', 'H8', 'D11']
+06:41:30 | [STEP 05] [ML        ] Crime risk re-evaluated.
+06:41:30 | [STEP 05] [ML        ] Police officers re-deployed to updated risk zones.
+06:41:30 | [STEP 05] [FLOOD     ] GOD MODE: Disastrous flood unleashed at E7! All adjacent roads blocked.
+06:41:30 | [STEP 06] [SIMULATION] --- Step 6 ---
+06:41:30 | [STEP 06] [ROUTING   ] Team moved to node C7
+06:41:30 | [STEP 06] [ROUTING   ] REPLANNING: Road (E7 <-> E8) blocked on current route. Recalculating from node D7.
+06:41:30 | [STEP 06] [ROUTING   ] WARNING: No path to civilian at node F14. Skipping.
+06:41:30 | [STEP 06] [ROUTING   ] WARNING: No path to civilian at node C14. Skipping.
+06:41:30 | [STEP 06] [ROUTING   ] WARNING: No path to civilian at node O10. Skipping.
+06:41:30 | [STEP 06] [ROUTING   ] ROUTE PLANNED: D7 -> C10, 7 steps
+06:41:33 | [STEP 06] [FLOOD     ] GOD MODE: Disastrous flood unleashed at D9! All adjacent roads blocked.
+06:41:33 | [STEP 07] [SIMULATION] --- Step 7 ---
+06:41:33 | [STEP 07] [ROUTING   ] Team moved to node D7
+06:41:33 | [STEP 07] [ROUTING   ] REPLANNING: Road (D8 <-> D9) blocked on current route. Recalculating from node C7.
+06:41:33 | [STEP 07] [ROUTING   ] WARNING: No path to civilian at node C10. Skipping.
+06:41:33 | [STEP 07] [ROUTING   ] ROUTE PLANNED: C7 -> M10, 26 steps
+06:41:38 | [STEP 07] [FLOOD     ] GOD MODE: Disastrous flood unleashed at M7! All adjacent roads blocked.
+06:41:38 | [STEP 08] [SIMULATION] --- Step 8 ---
+06:41:38 | [STEP 08] [ROUTING   ] REPLANNING: Road (M6 <-> M7) blocked on current route. Recalculating from node D7.
+06:41:38 | [STEP 08] [ROUTING   ] WARNING: No path to civilian at node M10. Skipping.
+06:41:38 | [STEP 08] [ROUTING   ] MISSION COMPLETE: All civilians reached.

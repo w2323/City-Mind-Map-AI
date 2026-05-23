@@ -5,7 +5,7 @@
 // ═══════════════════════════════════════════════════════════
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { getState, getGraph, startSimulation, stepSimulation } from '../api/citymind';
+import { getState, getGraph, startSimulation, stepSimulation, floodNode } from '../api/citymind';
 
 export function useSimulation() {
   const [state, setState] = useState(null);
@@ -59,6 +59,19 @@ export function useSimulation() {
     }
   }, []);
 
+  const handleFloodNode = useCallback(async (nodeId) => {
+    try {
+      setStepping(true); // use stepping state to show loading
+      const result = await floodNode(nodeId);
+      if (result.state) setState(result.state);
+      else { const s = await getState(); setState(s); }
+    } catch (err) {
+      setError('Failed to trigger flood');
+    } finally {
+      setStepping(false);
+    }
+  }, []);
+
   useEffect(() => { loadData(); }, [loadData]);
 
   const stats = useMemo(() => {
@@ -106,5 +119,5 @@ export function useSimulation() {
     };
   }, [state, graph]);
 
-  return { state, graph, stats, loading, error, connected, stepping, starting, handleStart, handleStep, loadData };
+  return { state, graph, stats, loading, error, connected, stepping, starting, handleStart, handleStep, handleFloodNode, loadData };
 }

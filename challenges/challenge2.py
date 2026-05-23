@@ -1,12 +1,4 @@
-# road_optimization.py — Challenge 2: Road Network Optimization
-# Kruskal's MST + redundancy edges + edge-disjoint hospital-depot path guarantee.
-#
-# Approach (per instructor correction):
-#   1. Build MST with Kruskal's algorithm (minimum spanning tree of all 225 nodes)
-#   2. Add extra redundancy edges to eliminate dead ends
-#   3. Verify and enforce 2 edge-disjoint paths between Primary Hospital and Ambulance Depot
-#
-# All algorithms implemented from scratch — no networkx.
+# challenge2.py — Challenge 2: Road Network Optimization (MST)
 
 import random
 from collections import deque
@@ -14,9 +6,7 @@ from core.city_graph import CityGraph
 from config.simulation_config import SimConfig
 
 
-# ──────────────────────────────────────────────────────────
-# Generate candidate edges (4-directional + diagonal)
-# ──────────────────────────────────────────────────────────
+
 def generate_candidate_edges(graph: CityGraph) -> list:
     """
     Generate all possible grid-adjacent edges as (cost, id_a, id_b) tuples.
@@ -59,9 +49,7 @@ def generate_candidate_edges(graph: CityGraph) -> list:
     return edges
 
 
-# ──────────────────────────────────────────────────────────
-# Union-Find — implemented from scratch for Kruskal's
-# ──────────────────────────────────────────────────────────
+
 class UnionFind:
     """Union-Find (Disjoint Set) with path compression and union by rank."""
 
@@ -88,9 +76,7 @@ class UnionFind:
         return True
 
 
-# ──────────────────────────────────────────────────────────
-# Step 1: Kruskal's MST — from scratch
-# ──────────────────────────────────────────────────────────
+
 def build_mst(graph: CityGraph) -> list:
     """
     Build Minimum Spanning Tree using Kruskal's algorithm.
@@ -112,9 +98,7 @@ def build_mst(graph: CityGraph) -> list:
     return mst_edges
 
 
-# ──────────────────────────────────────────────────────────
-# Step 2: Add redundancy edges — eliminate dead ends
-# ──────────────────────────────────────────────────────────
+
 def add_redundancy_edges(graph: CityGraph, extra_count: int = None):
     """
     Add extra edges beyond MST to improve network robustness.
@@ -154,9 +138,7 @@ def add_redundancy_edges(graph: CityGraph, extra_count: int = None):
             added += 1
 
 
-# ──────────────────────────────────────────────────────────
-# BFS path helpers — for edge-disjoint path verification
-# ──────────────────────────────────────────────────────────
+
 def bfs_path(graph: CityGraph, start: int, end: int) -> list:
     """Standard BFS. Returns list of node IDs from start to end, or None."""
     if start == end:
@@ -207,15 +189,7 @@ def bfs_path_excluding(graph: CityGraph, start: int, end: int,
     return None
 
 
-# ──────────────────────────────────────────────────────────
-# Step 3: Ensure 2 edge-disjoint paths between Hospital and Depot
-#
-# This uses the concept from max-flow/min-cut:
-# Find path P1, then find path P2 that shares NO edges with P1.
-# If P2 doesn't exist, incrementally add edges until it does.
-# This guarantees true edge-disjoint redundancy (not just
-# different shortest paths that might share critical edges).
-# ──────────────────────────────────────────────────────────
+
 def ensure_hospital_depot_redundancy(graph: CityGraph) -> bool:
     """
     Verify and enforce 2 edge-disjoint paths between Primary Hospital
@@ -301,9 +275,7 @@ def find_bridges(graph: CityGraph) -> list:
     return bridges
 
 
-# ──────────────────────────────────────────────────────────
-# Main entry point — simulation calls this
-# ──────────────────────────────────────────────────────────
+
 def build_road_network(graph: CityGraph) -> bool:
     """
     Build the complete road network:

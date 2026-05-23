@@ -23,3 +23,9 @@ export const stepSimulation = async () => {
   const res = await api.post("/simulation/step");
   return res.data;
 };
+
+// POST /simulation/flood_node/{node_id}
+export const floodNode = async (nodeId) => {
+  const res = await api.post(`/simulation/flood_node/${nodeId}`);
+  return res.data;
+};

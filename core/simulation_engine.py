@@ -117,7 +117,7 @@ class Simulation:
 
         # 1. Challenge 1: City layout via CSP
         self.events.log(EventType.LAYOUT, "Running CSP solver for city layout...")
-        from challenges.layout_planning import CSPSolver
+        from challenges.challenge1 import CSPSolver
         solver = CSPSolver(self.graph)
         if not solver.solve():
             conflict = solver.identify_failing_constraint()
@@ -131,7 +131,7 @@ class Simulation:
 
         # 2. Challenge 2: Road network via Kruskal's MST
         self.events.log(EventType.ROADS, "Building road network (MST + redundancy)...")
-        from challenges.road_optimization import build_road_network
+        from challenges.challenge2 import build_road_network
         build_road_network(self.graph)
         self.events.log(EventType.ROADS,
                         f"Road network built. "
@@ -139,7 +139,7 @@ class Simulation:
 
         # 3. Challenge 5: Crime risk ML (run BEFORE GA so risk weights affect fitness)
         self.events.log(EventType.ML, "Running crime risk prediction pipeline...")
-        from challenges.crime_prediction import run_crime_risk_pipeline
+        from challenges.challenge5 import run_crime_risk_pipeline
         kmeans, dt = run_crime_risk_pipeline(self.graph)
 
         # Update risk predictions in state
@@ -163,7 +163,7 @@ class Simulation:
                         f"Decision Tree rules:\n{dt.explain()}", level="debug")
 
         # Deploy 10 police officers to highest-risk zones
-        from challenges.crime_prediction import deploy_police_officers
+        from challenges.challenge5 import deploy_police_officers
         self.state.police_deployments = deploy_police_officers(self.graph)
         officer_nodes = [self.graph.nodes[d[0]].label for d in self.state.police_deployments]
         self.events.log(EventType.ML,
@@ -171,7 +171,7 @@ class Simulation:
 
         # 4. Challenge 3: Ambulance placement via GA
         self.events.log(EventType.AMBULANCE, "Running GA for ambulance placement...")
-        from challenges.ambulance_placement import GAambulancePlacer
+        from challenges.challenge3 import GAambulancePlacer
         ga_placer = GAambulancePlacer(self.graph)
         self.state.ambulances = ga_placer.run()
         self.events.metrics.ga_best_fitness = ga_placer.best_fitness
@@ -181,7 +181,7 @@ class Simulation:
 
         # 5. Challenge 4: Emergency routing via A*
         self.events.log(EventType.ROUTING, "Creating A* emergency router...")
-        from challenges.emergency_routing import create_router
+        from challenges.challenge4 import create_router
         self.state.router = create_router(self.graph)
         self.state.civilians = self._pick_random_civilians(SimConfig.NUM_CIVILIANS)
         hospitals = self.graph.get_nodes_of_type(SimConfig.HOSPITAL)
@@ -246,7 +246,7 @@ class Simulation:
 
         # Periodic ambulance re-evaluation
         if self.state.step % SimConfig.AMBULANCE_REEVAL_INTERVAL == 0:
-            from challenges.ambulance_placement import place_ambulances_fast
+            from challenges.challenge3 import place_ambulances_fast
             self.state.ambulances = place_ambulances_fast(self.graph)
             self.events.log(EventType.AMBULANCE,
                             f"Ambulances re-evaluated. Now at {[self.graph.nodes[n].label for n in self.state.ambulances]}")
@@ -254,7 +254,7 @@ class Simulation:
 
         # Periodic crime risk re-evaluation
         if self.state.step % SimConfig.RISK_REEVAL_INTERVAL == 0:
-            from challenges.crime_prediction import run_crime_risk_pipeline, deploy_police_officers
+            from challenges.challenge5 import run_crime_risk_pipeline, deploy_police_officers
             run_crime_risk_pipeline(self.graph)
             risk_counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
             for nid, node in self.graph.nodes.items():
@@ -286,6 +286,23 @@ class Simulation:
         self.events.log(EventType.FLOOD,
                         f"Road between {self.graph.nodes[edge.node_a].label} and {self.graph.nodes[edge.node_b].label} flooded!")
         self.events.metrics.total_floods += 1
+
+    def trigger_flood_at_node(self, node_id: int):
+        """Manually flood a specific node by blocking all adjacent roads."""
+        edges_to_block = []
+        for key, edge in self.graph.edges.items():
+            if not edge.blocked and (edge.node_a == node_id or edge.node_b == node_id):
+                edges_to_block.append((key, edge))
+        
+        if not edges_to_block:
+            return
+            
+        for key, edge in edges_to_block:
+            self.graph.block_road(edge.node_a, edge.node_b)
+            self.state.flood_history.append((self.state.step, edge.node_a, edge.node_b))
+            
+        self.events.log(EventType.FLOOD, f"GOD MODE: Disastrous flood unleashed at {self.graph.nodes[node_id].label}! All adjacent roads blocked.", level="warning")
+        self.events.metrics.total_floods += len(edges_to_block)
 
     # ── Full simulation run ─────────────────────────────────
 

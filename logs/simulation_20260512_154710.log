@@ -1,0 +1,38 @@
+15:47:10 | [INIT] [SIMULATION] Initializing CityMind simulation...
+15:47:10 | [INIT] [LAYOUT    ] Running CSP solver for city layout...
+15:47:10 | [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+15:47:10 | [INIT] [ROADS     ] Building road network (MST + redundancy)...
+15:47:10 | [INIT] [ROADS     ] Road network built. 254 active edges.
+15:47:10 | [INIT] [ML        ] Running crime risk prediction pipeline...
+15:47:10 | [INIT] [ML        ] Crime risk prediction complete. HIGH=147, MEDIUM=0, LOW=78
+15:47:10 | [INIT] [ML        ] Decision Tree rules:
+IF population_density <= 0.450 (gini=0.034):
+  IF industrial_proximity <= 0.750 (gini=0.000):
+    → PREDICT: LOW
+  ELSE:
+    → PREDICT: HIGH
+ELSE:
+  → PREDICT: HIGH
+
+15:47:10 | [INIT] [ML        ] 10 police officers deployed to nodes: M5, K9, B7, F5, G11, F4, K4, I5, E7, G9
+15:47:10 | [INIT] [AMBULANCE ] Running GA for ambulance placement...
+15:47:28 | [INIT] [AMBULANCE ] Ambulances placed at nodes ['D11', 'E6', 'H8'] (fitness=30.400)
+15:47:28 | [INIT] [ROUTING   ] Creating A* emergency router...
+15:47:28 | [INIT] [ROUTING   ] Mission set. Start: node E3. Civilians at: ['F14', 'C14', 'O10', 'C10', 'M10']
+15:47:28 | [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+15:48:51 | [STEP 01] [SIMULATION] --- Step 1 ---
+15:48:51 | [STEP 01] [ROUTING   ] Team moved to node E4
+15:48:51 | [STEP 01] [ROUTING   ] ROUTE PLANNED: E3 -> F14, 15 steps
+15:48:53 | [STEP 02] [SIMULATION] --- Step 2 ---
+15:48:53 | [STEP 02] [ROUTING   ] Team moved to node E5
+15:48:55 | [STEP 03] [SIMULATION] --- Step 3 ---
+15:48:55 | [STEP 03] [FLOOD     ] Road between N8 and N9 flooded!
+15:48:55 | [STEP 03] [ROUTING   ] Team moved to node E6
+15:48:57 | [STEP 04] [SIMULATION] --- Step 4 ---
+15:48:57 | [STEP 04] [ROUTING   ] Team moved to node E7
+15:48:59 | [STEP 05] [SIMULATION] --- Step 5 ---
+15:48:59 | [STEP 05] [FLOOD     ] Road between D1 and D2 flooded!
+15:48:59 | [STEP 05] [ROUTING   ] Team moved to node E8
+15:49:01 | [STEP 05] [AMBULANCE ] Ambulances re-evaluated. Now at ['E6', 'H8', 'D11']
+15:49:01 | [STEP 05] [ML        ] Crime risk re-evaluated.
+15:49:01 | [STEP 05] [ML        ] Police officers re-deployed to updated risk zones.

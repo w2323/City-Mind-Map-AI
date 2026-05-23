@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # CityMind: Urban Intelligence Simulation
 
 **CityMind** is a comprehensive AI-driven urban simulation and emergency management platform. It combines multiple core Artificial Intelligence algorithms into a unified, real-time responsive React 3D Dashboard and FastAPI backend.
@@ -48,3 +49,7 @@ Open the URL provided by Vite (usually `http://localhost:5173`) in your web brow
 
 ---
 *Note: All algorithms were written from scratch specifically for this project, satisfying the requirements without relying on black-box external solver frameworks.*
+=======
+# AI-Project
+will be updated
+>>>>>>> 89ae08c182fee46b640fa29a3b3ad0d56731f5cf

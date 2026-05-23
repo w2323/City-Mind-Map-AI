@@ -1,16 +1,4 @@
-# ambulance_placement.py — Challenge 3: Ambulance Placement via Genetic Algorithm
-# Minimax fitness: minimize worst-case citizen-to-ambulance response time.
-#
-# CRITICAL FIX: The GA no longer mutates node_type to DEPOT for ambulance positions.
-# Ambulance positions are stored as a separate list on the SimulationState,
-# preserving the CSP-assigned zone types on the graph.
-#
-# PERFORMANCE FIX: Dijkstra results are cached per node ID. Since the graph
-# doesn't change during a GA run, the same node's shortest-path tree is
-# reused across all chromosomes. This reduces Dijkstra calls from
-# pop_size × generations × num_ambulances (~36,000) to at most 225 unique nodes.
-#
-# All algorithms implemented from scratch — no external GA frameworks.
+# challenge3.py — Challenge 3: Ambulance Placement via Genetic Algorithm (GA)
 
 import random
 from core.city_graph import CityGraph
@@ -65,7 +53,7 @@ class GAambulancePlacer:
         # At most 225 entries (one per node), regardless of population or generations.
         self._dijkstra_cache: dict = {}
 
-    # ── Cached Dijkstra ─────────────────────────────────────
+
 
     def _cached_dijkstra(self, node_id: int) -> dict:
         """
@@ -78,17 +66,20 @@ class GAambulancePlacer:
             self._dijkstra_cache[node_id] = self.graph.dijkstra(node_id)
         return self._dijkstra_cache[node_id]
 
-    # ── Population initialization ───────────────────────────
+
 
     def initialize_population(self):
         """Create pop_size random chromosomes (each = list of node IDs).
-        Uses choices (with replacement) to allow multiple ambulances at one depot."""
+        Ensures unique placement (no duplicates) if enough available nodes exist."""
         self.population = []
         for _ in range(self.pop_size):
-            chrom = random.choices(self.available_nodes, k=self.num_ambulances)
+            if len(self.available_nodes) >= self.num_ambulances:
+                chrom = random.sample(self.available_nodes, self.num_ambulances)
+            else:
+                chrom = random.choices(self.available_nodes, k=self.num_ambulances)
             self.population.append(chrom)
 
-    # ── Fitness evaluation ──────────────────────────────────
+
 
     def fitness(self, chromosome: list) -> float:
         """
@@ -112,7 +103,7 @@ class GAambulancePlacer:
                 max_dist = min_dist
         return max_dist
 
-    # ── Selection ───────────────────────────────────────────
+
 
     def tournament_selection(self, fitness_cache: dict,
                              tournament_size: int = None) -> list:
@@ -122,34 +113,42 @@ class GAambulancePlacer:
         return min(contestants,
                    key=lambda c: fitness_cache.get(tuple(c), self.fitness(c)))
 
-    # ── Crossover ───────────────────────────────────────────
+
 
     def crossover(self, parent1: list, parent2: list) -> tuple:
-        """Uniform crossover: for each slot, randomly pick from parent1 or parent2."""
-        child1, child2 = [], []
-        for i in range(self.num_ambulances):
-            if random.random() < 0.5:
-                child1.append(parent1[i])
-                child2.append(parent2[i])
-            else:
-                child1.append(parent2[i])
-                child2.append(parent1[i])
-        # Duplicates are allowed since we can have multiple ambulances at the same depot.
+        """Crossover that ensures unique positions if enough nodes exist."""
+        pool = list(set(parent1 + parent2))
+        
+        if len(pool) < self.num_ambulances:
+            others = list(set(self.available_nodes) - set(pool))
+            random.shuffle(others)
+            pool.extend(others)
+            
+        if len(pool) >= self.num_ambulances:
+            child1 = random.sample(pool, self.num_ambulances)
+            child2 = random.sample(pool, self.num_ambulances)
+        else:
+            child1 = random.choices(pool, k=self.num_ambulances)
+            child2 = random.choices(pool, k=self.num_ambulances)
+            
         return child1, child2
 
 
 
-    # ── Mutation ────────────────────────────────────────────
+
 
     def mutate(self, chromosome: list) -> list:
-        """Per-slot mutation: each position has mutation_rate chance of random replacement."""
+        """Mutation that tries to pick unused nodes to maintain uniqueness."""
         result = list(chromosome)
         for i in range(len(result)):
             if random.random() < self.mutation_rate:
-                result[i] = random.choice(self.available_nodes)
+                candidates = [n for n in self.available_nodes if n not in result]
+                if not candidates:
+                    candidates = self.available_nodes
+                result[i] = random.choice(candidates)
         return result
 
-    # ── Main GA loop ────────────────────────────────────────
+
 
     def run(self) -> list:
         """
@@ -211,9 +210,7 @@ class GAambulancePlacer:
         return self.best_solution
 
 
-# ──────────────────────────────────────────────────────────
-# Entry points — called by simulation engine
-# ──────────────────────────────────────────────────────────
+
 def place_ambulances(graph: CityGraph) -> list:
     """Full GA run for initial ambulance placement."""
     placer = GAambulancePlacer(graph)

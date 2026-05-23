@@ -5,11 +5,12 @@
 // ═══════════════════════════════════════════════════════════════════════
 import React, { useRef, useState, useMemo, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { MapControls, Text } from '@react-three/drei';
+import { MapControls, Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { GenericNode } from './Buildings3D';
 import { Roads3D } from './Roads3D';
 import * as PP from '../engine/ParticlePool';
+import { getMST } from '../utils/pathfinding';
 
 // ── Grid constants ─────────────────────────────────────────────────
 const GRID_SIZE   = 15;        // 15 × 15 city grid
@@ -110,16 +111,18 @@ function PhysicsEngine({ simSpeed }) {
 // ── Main Component ─────────────────────────────────────────────────
 export default function GraphCanvas3D({
   graph, state, stats, viewToggles, simSpeed,
-  onSelectNode, selectedNode, booted, streetView, resetTrigger, onZoomChange
+  onSelectNode, selectedNode, booted, streetView, resetTrigger, onZoomChange, placementMode,
+  roadMode, gatesNodeId, gatesPaths, godMode, coverageRadius
 }) {
   const [hoveredNode, setHoveredNode] = useState(null);
+  const [optimizingNodes, setOptimizingNodes] = useState([]);
 
   // ── Build layout once graph data arrives ──────────────────────
   const layout = useMemo(() => {
     if (!graph?.nodes) return null;
 
     const nodes = graph.nodes;
-    const edges = stats?.edgeList || [];
+    const baseEdges = stats?.edgeList || [];
     const currentPath = state?.router?.current_path || [];
 
     // Route highlight set
@@ -128,6 +131,39 @@ export default function GraphCanvas3D({
       const a = Math.min(currentPath[i], currentPath[i + 1]);
       const b = Math.max(currentPath[i], currentPath[i + 1]);
       routeSet.add(`${a}_${b}`);
+    }
+
+    let displayEdges = baseEdges;
+
+    if (roadMode === 'Optimized (MST)') {
+      const { mst } = getMST(baseEdges, 225);
+      displayEdges = mst;
+    } else if (roadMode === 'Comparison') {
+      const { mst, extra } = getMST(baseEdges, 225);
+      for (const e of extra) {
+        const a = Math.min(e.nodeA, e.nodeB);
+        const b = Math.max(e.nodeA, e.nodeB);
+        routeSet.add(`${a}_${b}`);
+      }
+      displayEdges = baseEdges;
+    } else if (roadMode === 'All roads') {
+      const allE = [];
+      const grid = Array.from({length: 15}, () => Array(15).fill(null));
+      for (const id in nodes) {
+        const n = nodes[id];
+        grid[n.row][n.col] = Number(id);
+      }
+      for (let r = 0; r < 15; r++) {
+        for (let c = 0; c < 15; c++) {
+          const u = grid[r][c];
+          if (u === null) continue;
+          if (c + 1 < 15 && grid[r][c+1] !== null) allE.push({ nodeA: u, nodeB: grid[r][c+1], blocked: false });
+          if (r + 1 < 15 && grid[r+1][c] !== null) allE.push({ nodeA: u, nodeB: grid[r+1][c], blocked: false });
+          if (r + 1 < 15 && c + 1 < 15 && grid[r+1][c+1] !== null) allE.push({ nodeA: u, nodeB: grid[r+1][c+1], blocked: false });
+          if (r + 1 < 15 && c - 1 >= 0 && grid[r+1][c-1] !== null) allE.push({ nodeA: u, nodeB: grid[r+1][c-1], blocked: false });
+        }
+      }
+      displayEdges = allE;
     }
 
     // Flat node list
@@ -146,9 +182,9 @@ export default function GraphCanvas3D({
     // ── Spawn traffic particles ────────────────────────────────
     PP.resetPool();
     let idx = 0;
-    for (let ei = 0; ei < edges.length; ei++) {
+    for (let ei = 0; ei < displayEdges.length; ei++) {
       if (idx >= PP.MAX_PARTICLES) break;
-      const e = edges[ei];
+      const e = displayEdges[ei];
       const nA = nodes[String(e.nodeA)];
       const nB = nodes[String(e.nodeB)];
       if (!nA || !nB) continue;
@@ -179,8 +215,25 @@ export default function GraphCanvas3D({
       }
     }
 
-    return { nodes, edges, routeSet, nodeList };
-  }, [graph, state, stats]);
+    return { nodes, edges: displayEdges, routeSet, nodeList };
+  }, [graph, state, stats, roadMode]);
+
+  const depots = useMemo(() => {
+    if (!graph?.nodes) return [];
+    return Object.entries(graph.nodes)
+      .filter(([_, n]) => n.node_type === 'AMBULANCE_DEPOT' || n.node_type === 'DEPOT')
+      .map(([id]) => Number(id));
+  }, [graph]);
+
+  useEffect(() => {
+    if (placementMode === 'Optimizing...' && depots.length > 0) {
+      const interval = setInterval(() => {
+         const shuffled = [...depots].sort(() => 0.5 - Math.random());
+         setOptimizingNodes(shuffled.slice(0, 3));
+      }, 150);
+      return () => clearInterval(interval);
+    }
+  }, [placementMode, depots]);
 
   if (!booted || !layout) return null;
   const { nodes, edges, routeSet, nodeList } = layout;
@@ -283,6 +336,39 @@ export default function GraphCanvas3D({
               />
             )}
 
+            {/* ── Gates of Death Paths ─────────────────────────── */}
+            {gatesPaths && gatesPaths.map((gp, idx) => {
+              const points = gp.path.map(id => {
+                const n = nodes[id];
+                return new THREE.Vector3(n.col * CELL_SIZE, 0.4, n.row * CELL_SIZE);
+              });
+              if (points.length < 2) return null;
+              return (
+                <Line
+                  key={`gp-${idx}`}
+                  points={points}
+                  color={gp.color}
+                  lineWidth={4}
+                  transparent
+                  opacity={0.9}
+                />
+              );
+            })}
+
+            {/* ── Agent Trails ─────────────────────────── */}
+            {viewToggles?.trails && state?.router?.current_path && state.router.current_path.length > 1 && (
+              <Line
+                points={state.router.current_path.map(id => {
+                  const n = nodes[id];
+                  return new THREE.Vector3(n.col * CELL_SIZE, 0.6, n.row * CELL_SIZE);
+                })}
+                color="#00ffcc"
+                lineWidth={6}
+                transparent
+                opacity={0.8}
+              />
+            )}
+
             {/* ── Buildings / nodes ───────────────────────────── */}
             {nodeList.map(n => {
               const displayType = n.type === 'EMPTY' ? 'GATE' : n.type;
@@ -306,20 +392,29 @@ export default function GraphCanvas3D({
                     onPointerOver={(e) => {
                       e.stopPropagation();
                       setHoveredNode(n.id);
-                      document.body.style.cursor = 'pointer';
+                      document.body.style.cursor = godMode ? 'crosshair' : 'pointer';
                     }}
                     onPointerOut={() => {
                       setHoveredNode(null);
                       document.body.style.cursor = 'default';
                     }}
                   />
-                  {viewToggles?.coverage && state?.ambulances?.includes(n.id) && (
-                    <mesh position={[nx, 0.05, nz]} rotation={[-Math.PI / 2, 0, 0]} geometry={sharedGeos.coverageCircle} material={sharedMats.coverageBase}>
+                  {/* Ambulance Coverage Rings */}
+                  {((placementMode === 'All candidates' && (displayType === 'AMBULANCE_DEPOT' || displayType === 'DEPOT')) ||
+                    (placementMode === 'Optimizing...' && optimizingNodes.includes(n.id)) ||
+                    ((!placementMode || placementMode === 'Current' || placementMode === 'Best found') && viewToggles?.coverage && state?.ambulances?.includes(n.id))
+                  ) && (
+                    <mesh position={[nx, 0.05, nz]} rotation={[-Math.PI / 2, 0, 0]} geometry={sharedGeos.coverageCircle} material={sharedMats.coverageBase} scale={[coverageRadius / 5, coverageRadius / 5, 1]}>
                       <mesh position={[0, 0, 0.1]} geometry={sharedGeos.coverageRing} material={sharedMats.coverageRing} />
                     </mesh>
                   )}
                   {viewToggles?.clusters && displayType === 'RESIDENTIAL' && (n.id % 3 === 0) && (
                     <mesh position={[nx, 0.1, nz]} rotation={[-Math.PI / 2, 0, 0]} geometry={sharedGeos.clusterCircle} material={sharedMats.cluster} />
+                  )}
+                  {gatesNodeId === n.id && (
+                    <mesh position={[nx, 0.08, nz]} rotation={[-Math.PI / 2, 0, 0]} geometry={sharedGeos.coverageCircle} scale={[coverageRadius / 5, coverageRadius / 5, 1]}>
+                      <meshBasicMaterial color="#ff0055" transparent opacity={0.6} depthWrite={false} />
+                    </mesh>
                   )}
                   {viewToggles?.heatmap && (
                     <mesh position={[nx, 0.03, nz]} rotation={[-Math.PI / 2, 0, 0]} geometry={sharedGeos.heatmap} material={

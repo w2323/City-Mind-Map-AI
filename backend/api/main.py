@@ -47,4 +47,12 @@ def start_simulation():
 def step_simulation():
     if not sim.state.is_complete:
         sim.step_forward()
-    return {"message": f"Stepped to {sim.state.step}", "state": sim.state.to_dict()}
+    return {"message": f"Stepped to {sim.state.step}", "state": sim.state.to_dict(), "stats": sim.events.to_dict()}
+
+@app.post("/simulation/flood_node/{node_id}")
+def flood_node(node_id: int):
+    sim.trigger_flood_at_node(node_id)
+    # Step forward immediately so the router reroutes!
+    if not sim.state.is_complete:
+        sim.step_forward()
+    return {"message": f"Flooded node {node_id} and stepped.", "state": sim.state.to_dict(), "stats": sim.events.to_dict()}

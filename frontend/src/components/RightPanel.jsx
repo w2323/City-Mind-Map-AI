@@ -130,39 +130,6 @@ export default function RightPanel({ selectedNode, graph, state, stats, onClose 
         )}
       </div>
 
-      {/* Event Log */}
-      <div className="panel__section" style={{ padding: '0 20px', flex: 1, borderBottom: 'none' }}>
-        <div className="panel__title">LIVE EVENT FEED</div>
-        <div className="event-log" ref={logRef}>
-          {events.slice(-5).reverse().map((evt, i) => {
-            const msg = typeof evt === 'string' ? evt : evt.message || '';
-            const evtType = evt.type || '';
-            let icon = '📡';
-            let modifier = '';
-            if (evtType === 'FLOOD') { icon = '🛑'; modifier = 'event-item--danger'; }
-            else if (evtType === 'ROUTING') { icon = '🚑'; modifier = 'event-item--info'; }
-            else if (evtType === 'ML') { icon = '⚠️'; modifier = 'event-item--warning'; }
-            else if (evtType === 'PLACEMENT') { icon = '📍'; modifier = 'event-item--success'; }
-            else if (evtType === 'REROUTE') { icon = '🔄'; modifier = 'event-item--warning'; }
-
-            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-
-            return (
-              <div key={i} className={`event-item ${modifier}`}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <span className="event-item__time">[{time}] {icon}</span>
-                  <span className="event-item__msg">{typeof msg === 'string' ? msg : ''}</span>
-                </div>
-              </div>
-            );
-          })}
-          {events.length === 0 && (
-            <div style={{ fontSize: 11, color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
-              No events yet — start simulation
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
