@@ -129,5 +129,46 @@ Risk Analysis
 Emergency Resource Allocation
    ↓
 Dynamic Simulation
+
+🚀 How to Run the Project
+
+This system uses a decoupled architecture. You will need two terminal windows: one for the Python Backend and one for the React Frontend.
+
+1. Start the Backend (FastAPI / AI Engine)
+
+The backend requires Python 3.9+.
+
+# Navigate to the project root
+cd CityMind_Submission
+
+# Install required Python dependencies
+pip install -r requirements.txt
+
+# Start the simulation engine and API
+uvicorn main:app --reload --port 8000
+
+
+The backend will initialize the city graph, run the CSP layout, build the MST roads, train the ML models, and wait for frontend connections.
+
+2. Start the Frontend (React 3D Dashboard)
+
+The frontend requires Node.js (v18+ recommended).
+
+# Open a new terminal and navigate to the frontend folder
+cd CityMind_Submission/frontend
+
+# Install React dependencies (Vite, Three.js, etc.)
+npm install
+
+# Start the Vite development server
+npm run dev
+
+3. Launch the Simulation
+
+Open the URL provided by Vite (usually http://localhost:5173) in your web browser.
+
+Open the left-side control panel.
+Click ▶ START to boot the 3D map engine and connect to the AI backend.
+Use NEXT STEP to advance the simulation, watch floods occur, and see the A* router and GA ambulances react dynamically in real-time!
    ↓
 Adaptive Routing
