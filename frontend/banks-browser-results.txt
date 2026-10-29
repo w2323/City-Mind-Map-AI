@@ -1,0 +1,107 @@
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 285 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=48, MEDIUM=103, LOW=74
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: B3, M5, I13, F11, L2, K10, E3, D4, I4, F3
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: C4, I4, K10, C11, G12, O13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at B4 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at J5 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at D12 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] INFO:     Started server process [9252]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8101 (Press CTRL+C to quit)
+[WebServer] (node:2068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:13332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 12:35:24 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+  ok 1 e2e\prototype.spec.js:3:1 › live controls use Python state, GA, metrics export and comparison views (11.9s)
+[WebServer] 12:35:36 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 01] [ROADS     ] Gate of Death 8 unleashed at H8: radius 8, 258 roads restricted to ambulances.
+[WebServer] [STEP 01] [ROADS     ] Gate restrictions cleared from 258 roads. Full road blocks remain in effect.
+  ok 2 e2e\prototype.spec.js:28:1 › Gate of Death blocks normal traffic while preserving ambulance routes (5.4s)
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 279 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=152, MEDIUM=0, LOW=73
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at F3 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at M6 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at D14 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] 12:35:43 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [INIT] [POLICE    ] CR-0001: Injury reported at C4, severity 1.
+[WebServer] [INIT] [POLICE    ] CR-0001: POL-01 dispatched to C4 by normal-access road cost 5.30.
+[WebServer] [INIT] [ROUTING   ] E-0001: AMB-02 dispatched to C4 (route cost 0.00).
+[WebServer] [INIT] [ROUTING   ] AMB-02 arrived at C4. Emergency resolved; returning to depot.
+[WebServer] [INIT] [AMBULANCE ] AMB-02 is available at depot C4.
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+[WebServer] [STEP 02] [SIMULATION] --- Step 2 ---
+[WebServer] [STEP 03] [SIMULATION] --- Step 3 ---
+[WebServer] [STEP 04] [SIMULATION] --- Step 4 ---
+[WebServer] [STEP 04] [POLICE    ] POL-01 arrived at C4 for CR-0001.
+[WebServer] [STEP 05] [SIMULATION] --- Step 5 ---
+[WebServer] [STEP 05] [ML        ] Crime risk re-evaluated.
+[WebServer] [STEP 05] [ML        ] Patrol priorities refreshed; physical cars keep their locations.
+[WebServer] [STEP 06] [SIMULATION] --- Step 6 ---
+[WebServer] [STEP 06] [POLICE    ] CR-0001: police task completed; medical task is tracked separately.
+[WebServer] [STEP 07] [SIMULATION] --- Step 7 ---
+[WebServer] [STEP 08] [SIMULATION] --- Step 8 ---
+  ok 3 e2e\prototype.spec.js:52:1 › police reports dispatch moving cars, coordinate medical help and compare deployments (19.2s)
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 279 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=152, MEDIUM=0, LOW=73
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at F3 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at M6 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at D14 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+[WebServer] [STEP 02] [SIMULATION] --- Step 2 ---
+[WebServer] [STEP 03] [SIMULATION] --- Step 3 ---
+[WebServer] 12:36:02 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 03] [POLICE    ] CR-0001: Theft reported at A1, severity 1.
+[WebServer] [STEP 03] [POLICE    ] CR-0001: POL-01 dispatched to A1 by normal-access road cost 8.60.
+[WebServer] [STEP 04] [SIMULATION] --- Step 4 ---
+[WebServer] [STEP 05] [SIMULATION] --- Step 5 ---
+[WebServer] [STEP 05] [ML        ] Crime risk re-evaluated.
+[WebServer] [STEP 05] [ML        ] Patrol priorities refreshed; physical cars keep their locations.
+[WebServer] [STEP 06] [SIMULATION] --- Step 6 ---
+[WebServer] [STEP 07] [SIMULATION] --- Step 7 ---
+[WebServer] [STEP 08] [SIMULATION] --- Step 8 ---
+[WebServer] [STEP 09] [SIMULATION] --- Step 9 ---
+[WebServer] [STEP 10] [SIMULATION] --- Step 10 ---
+[WebServer] [STEP 10] [ML        ] Crime risk re-evaluated.
+[WebServer] [STEP 10] [ML        ] Patrol priorities refreshed; physical cars keep their locations.
+[WebServer] [STEP 10] [POLICE    ] POL-01 arrived at A1 for CR-0001.
+[WebServer] [STEP 11] [SIMULATION] --- Step 11 ---
+[WebServer] [STEP 12] [SIMULATION] --- Step 12 ---
+[WebServer] [STEP 12] [POLICE    ] CR-0001: police task completed; medical task is tracked separately.
+[WebServer] [STEP 13] [SIMULATION] --- Step 13 ---
+  ok 4 e2e\prototype.spec.js:85:1 › patrol OFF parks other cars throughout manual crime dispatch (17.6s)
+
+  4 passed (59.3s)

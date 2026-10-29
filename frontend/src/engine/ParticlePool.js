@@ -70,3 +70,74 @@ export function updateEdgeEndpoints(i, sx, sy, ex, ey) {
 
 export function getActiveCount() { return activeCount; }
 export function setActiveCount(n) { activeCount = n; }
+
+export function createParticlePool() {
+const MAX_PARTICLES = 800;
+
+// Particle state arrays — allocated ONCE at module load
+const px       = new Float32Array(MAX_PARTICLES);
+const py       = new Float32Array(MAX_PARTICLES);
+const pStartX  = new Float32Array(MAX_PARTICLES);
+const pStartY  = new Float32Array(MAX_PARTICLES);
+const pEndX    = new Float32Array(MAX_PARTICLES);
+const pEndY    = new Float32Array(MAX_PARTICLES);
+const pT       = new Float32Array(MAX_PARTICLES); // 0-1 along edge
+const pSpeed   = new Float32Array(MAX_PARTICLES);
+const pSize    = new Float32Array(MAX_PARTICLES);
+const pLife    = new Float32Array(MAX_PARTICLES);
+const pEdge    = new Int32Array(MAX_PARTICLES);   // edge index
+const pColorR  = new Uint8Array(MAX_PARTICLES);
+const pColorG  = new Uint8Array(MAX_PARTICLES);
+const pColorB  = new Uint8Array(MAX_PARTICLES);
+const pActive  = new Uint8Array(MAX_PARTICLES);   // 0 or 1
+const pTrailT  = new Float32Array(MAX_PARTICLES); // trail length as t delta
+
+let activeCount = 0;
+
+function resetPool() {
+  activeCount = 0;
+  pActive.fill(0);
+}
+
+function spawnParticle(sx, sy, ex, ey, speed, size, r, g, b, edgeIdx, trailLen) {
+  if (activeCount >= MAX_PARTICLES) return -1;
+  const i = activeCount++;
+  pStartX[i] = sx; pStartY[i] = sy;
+  pEndX[i] = ex; pEndY[i] = ey;
+  pT[i] = Math.random(); // random start position along edge
+  pSpeed[i] = speed;
+  pSize[i] = size;
+  pLife[i] = 1.0;
+  pEdge[i] = edgeIdx;
+  pColorR[i] = r; pColorG[i] = g; pColorB[i] = b;
+  pActive[i] = 1;
+  pTrailT[i] = trailLen;
+  // Calculate initial position
+  px[i] = sx + (ex - sx) * pT[i];
+  py[i] = sy + (ey - sy) * pT[i];
+  return i;
+}
+
+function updateParticles(dt, speedMultiplier) {
+  for (let i = 0; i < activeCount; i++) {
+    if (!pActive[i]) continue;
+    pT[i] += pSpeed[i] * dt * speedMultiplier;
+    if (pT[i] > 1.0) pT[i] -= 1.0;
+    if (pT[i] < 0.0) pT[i] += 1.0;
+
+    const t = pT[i];
+    px[i] = pStartX[i] + (pEndX[i] - pStartX[i]) * t;
+    py[i] = pStartY[i] + (pEndY[i] - pStartY[i]) * t;
+  }
+}
+
+function updateEdgeEndpoints(i, sx, sy, ex, ey) {
+  pStartX[i] = sx; pStartY[i] = sy;
+  pEndX[i] = ex; pEndY[i] = ey;
+}
+
+function getActiveCount() { return activeCount; }
+function setActiveCount(n) { activeCount = n; }
+
+return { MAX_PARTICLES, px, py, pStartX, pStartY, pEndX, pEndY, pT, pSpeed, pSize, pLife, pEdge, pColorR, pColorG, pColorB, pActive, pTrailT, resetPool, spawnParticle, updateParticles, updateEdgeEndpoints, getActiveCount, setActiveCount };
+}

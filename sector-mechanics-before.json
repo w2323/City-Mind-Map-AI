@@ -1,0 +1,23 @@
+{
+  "core\\air_rescue.py": "15ca1d5edce7c47bb4fc72d02b7b271dd9ca83ced4e8d31a7a43ea3ca676a48e",
+  "core\\ambulance_fleet.py": "72a155c6dc82fb8e6fc72ad31d458f11744265edb070587a69a9bbf51ad785e7",
+  "core\\analytics.py": "67d51856401df9b35eb93c78885389ce2b33959812cf3b1c4158678e347691e2",
+  "core\\bank_placement.py": "647875464a903a706ce80f2e63a4c064569aadaaf5cee85b7509aae662ac6097",
+  "core\\city_graph.py": "f87b251af41b9837a21bf8c692c26262a7d4a6bdde516dad4dd06c90bc8c1475",
+  "core\\crime_heatmap.py": "e292cb60fefa4bf20048a3cde1829eb6c2113d7268eab1536c92aecc1ee3a5ef",
+  "core\\disasters.py": "3f62b2b6bcad7f03c4b3d10fd38e0d0a93b19174d47a014478d1d3ab2d3e7c33",
+  "core\\event_manager.py": "b82098131548f5724b0fbdd97ab53cf947114427d981adab8bd9e236e2871588",
+  "core\\medical_network.py": "c912ebbba05626a06014350c8357ebcbc8f6135286f0bdd5aa492cd9727f1924",
+  "core\\police_service.py": "f3200b4a5f58cbcf77e3ea704d4f1e2ed7df5b1d0758fa1ad5ce3528854b58c6",
+  "core\\simulation_engine.py": "467d9637df49fc8e346e5578e42ae9d424bd979db3055f4f0a7d5d13ef06441f",
+  "core\\__init__.py": "f793e89fc0784b419330f23ef5cc52ead5ab516294e2b3995be4068962632025",
+  "backend\\api\\main.py": "3e3d9718c94425bc7e55171741f2b16b04720c3a19bbbe18acba06db846ced78",
+  "challenges\\challenge1.py": "cc2af0cdbd31298dca226ee3d9a1bbc89a7cffca9cee545453ccc712107dd6d2",
+  "challenges\\challenge2.py": "db0382ac4eeafa3e1f0bbb63477c528f0751ae4fe07d1e0b514268c30d96b575",
+  "challenges\\challenge3.py": "0a7391592639b310bdbcfd3cc3e892b289f251110e050d4341e010cb4234d3d3",
+  "challenges\\challenge4.py": "6026ab7748d5d4ea69c23a075daaa5f0692e112d24e5785d3f6584a4c39885df",
+  "challenges\\challenge5.py": "f770444c09d5a78b52149e255b34be4f6da4ef56f113b5611e784c49786d5085",
+  "challenges\\__init__.py": "4303173a17a2a1635fbfc26cad9a7115840a26447189f41bd3a5de58d657c916",
+  "config\\simulation_config.py": "39d9f760ef8708b54142f51448dbc4a8dcc843be83f9b8bb79b4ba3999ab1f44",
+  "config\\__init__.py": "78ff6e6697623ab8f61043f4b70e7c68cf0764874f19fdf7b609d818f85963fa"
+}

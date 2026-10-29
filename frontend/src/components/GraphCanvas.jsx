@@ -75,7 +75,7 @@ export default function GraphCanvas({ graph, state, stats, booted, selectedNode,
     const nodeList = [];
     for (const id in nodes) {
       const n = nodes[id];
-      nodeList.push({ id: Number(id), row: n.row, col: n.col, type: n.node_type || 'EMPTY', pop: n.population_density || 0 });
+      nodeList.push({ id: Number(id), row: n.row, col: n.col, type: n.node_type || 'EMPTY', pop: n.population || 0 });
     }
 
     layoutRef.current.nodes = nodes;
@@ -364,6 +364,10 @@ function drawEdges(ctx, edges, nodes, spacing, ox, oy, routeSet, time) {
       ctx.strokeStyle = 'rgba(200, 200, 200, 0.4)';
       ctx.setLineDash([8, 8]);
       ctx.lineWidth = 2;
+    } else if (e.temporarily_blocked) {
+      ctx.strokeStyle = '#f59e0b';
+      ctx.setLineDash([]);
+      ctx.lineWidth = 3;
     } else if (isRoute) {
       ctx.strokeStyle = 'rgba(0, 102, 255, 0.6)';
       ctx.setLineDash([]);
@@ -530,7 +534,7 @@ function initParticlesFromEdges(edges, nodes, routeSet, spacing, ox, oy) {
     const e = edges[ei];
     const nA = nodes[String(e.nodeA)];
     const nB = nodes[String(e.nodeB)];
-    if (!nA || !nB) continue;
+    if (!nA || !nB || e.blocked || e.temporarily_blocked || e.candidate) continue;
 
     const ax = ox + nA.col * spacing;
     const ay = oy + nA.row * spacing;

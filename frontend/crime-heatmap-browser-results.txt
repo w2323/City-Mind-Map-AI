@@ -1,0 +1,47 @@
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 279 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=161, MEDIUM=0, LOW=64
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: H3, F4, F5, J7, L7, G8, C2, L11, B4, G7
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: I3, C6, F6, M9, C13, J13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at G3 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at C11 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at K14 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] INFO:     Started server process [10668]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8101 (Press CTRL+C to quit)
+[WebServer] (node:26924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:24220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 279 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=152, MEDIUM=0, LOW=73
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at O6 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at F9 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at M14 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] 12:54:12 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [INIT] [POLICE    ] CR-0001: Theft reported at B1, severity 1.
+[WebServer] [INIT] [POLICE    ] CR-0001: POL-05 dispatched to B1 by normal-access road cost 10.40.
+  ok 1 e2e\prototype.spec.js:120:1 › crime heatmap keeps dense residential nodes low until a report is submitted (9.5s)
+
+  1 passed (14.6s)

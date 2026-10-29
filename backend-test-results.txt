@@ -1,0 +1,16 @@
+[INIT] [SIMULATION] Initializing CityMind simulation...
+[INIT] [LAYOUT    ] Running CSP solver for city layout...
+[INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[INIT] [ROADS     ] Building road network (MST + redundancy)...
+[INIT] [ROADS     ] Road network built. 280 active edges.
+[INIT] [ML        ] Preparing the existing medical-planning cost model...
+[INIT] [ML        ] Medical-planning cost model ready. HIGH=116, MEDIUM=27, LOW=82
+[INIT] [ML        ] Initial planning-cost priority areas: L12, I2, H9, J1, H3, H6, J11, B2, K3, I5
+[INIT] [ML        ] Live crime heatmap ready: bank assets, residential context and reported incidents.
+[INIT] [AMBULANCE ] GA medical centers: K1, C5, H6, N9, H13, B15
+[INIT] [ROUTING   ] Creating A* emergency router...
+[INIT] [POLICE    ] Police station PS-01 opened at B3 with 4 patrol car(s).
+[INIT] [POLICE    ] Police station PS-02 opened at A10 with 3 patrol car(s).
+[INIT] [POLICE    ] Police station PS-03 opened at O10 with 3 patrol car(s).
+[INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[INIT] [SIMULATION] Initialization complete. All 5 challenges ready.

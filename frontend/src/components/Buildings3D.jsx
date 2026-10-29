@@ -11,7 +11,7 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useGLTF } from '@react-three/drei';
+import { Text, useGLTF } from '@react-three/drei';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 
 // ── Target size for models (must be < CELL_SIZE/2 so nothing overlaps)
@@ -277,7 +277,7 @@ export function Gate(props) {
 export function EmptyNode({ position }) {
   return (
     <group position={position}>
-      <mesh geometry={geos.sphere} material={mats.green} scale={[0.2, 0.2, 0.2]} position={[0, 0.2, 0]} />
+      <mesh geometry={geos.cyl1} material={mats.green} scale={[1, 0.15, 1]} position={[0, 0.1, 0]} />
     </group>
   );
 }
@@ -285,7 +285,18 @@ export function EmptyNode({ position }) {
 // ═══════════════════════════════════════════════════════════════════
 // Generic dispatcher
 // ═══════════════════════════════════════════════════════════════════
+export function Bank({position}) {
+  return <group position={position}>
+    <mesh geometry={geos.box1} material={mats.slate} scale={[5,.35,4]} position={[0,.18,0]} />
+    <mesh geometry={geos.box1} material={mats.cream} scale={[4.2,2.2,2.8]} position={[0,1.45,-.35]} />
+    {[-1.8,-.6,.6,1.8].map(x=><mesh key={x} geometry={geos.cyl1} material={mats.white} scale={[.17,1.1,.17]} position={[x,1.45,1.55]} />)}
+    <mesh geometry={geos.box1} material={mats.gold} scale={[5,.4,4]} position={[0,2.8,0]} />
+    <Text position={[0,3.05,0]} rotation={[-Math.PI/2,0,0]} fontSize={1.05} color="#3b2a08">FINANCE</Text>
+  </group>;
+}
+
 const COMPONENTS = {
+  BANK:       Bank,
   HOSPITAL:    Hospital,
   DEPOT:       AmbulanceDepot,
   POLICE:      Police,

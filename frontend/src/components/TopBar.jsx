@@ -5,9 +5,9 @@
 
 export default function TopBar({ stats, connected, fpsRef, className, onToggleDash }) {
   const step = stats?.step ?? 0;
-  const max = stats?.maxSteps ?? 20;
+  const max = stats?.maxSteps ?? 0;
   const total = stats?.totalNodes ?? 0;
-  const incidents = stats?.floods?.length ?? 0;
+  const incidents = (stats?.disasters?.gates?.length || 0) + (stats?.disasters?.fully_blocked_roads || 0);
   const done = stats?.isComplete;
 
   return (
@@ -23,7 +23,7 @@ export default function TopBar({ stats, connected, fpsRef, className, onToggleDa
             {connected ? 'LIVE' : 'OFFLINE'}
           </span>
         </div>
-        <span className="top-bar__status-item">{total} nodes</span>
+        <span className="top-bar__status-item">{total} sectors</span>
         <span className="top-bar__status-item">
           <span style={{ color: incidents > 0 ? 'var(--orange-warm)' : 'var(--text-secondary)' }}>
             {incidents} incidents

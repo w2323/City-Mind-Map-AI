@@ -5,6 +5,8 @@
 import logging
 import os
 import time
+import math
+import uuid
 from enum import Enum, auto
 from datetime import datetime
 
@@ -22,6 +24,7 @@ class EventType(Enum):
     SIMULATION = auto()    # General simulation lifecycle
     GRAPH = auto()         # Graph structural changes
     METRIC = auto()        # Performance / metrics events
+    POLICE = auto()        # Reports, patrol movement, police dispatch and handling
 
 
 # ──────────────────────────────────────────────────────────
@@ -78,7 +81,7 @@ class SimulationMetrics:
             "disconnected_nodes": self.disconnected_nodes,
             "total_edges_active": self.total_edges_active,
             "total_edges_blocked": self.total_edges_blocked,
-            "ga_best_fitness": round(self.ga_best_fitness, 3),
+            "ga_best_fitness": round(self.ga_best_fitness, 3) if math.isfinite(self.ga_best_fitness) else None,
             "simulation_duration_sec": round(self.simulation_duration, 2),
         }
 
@@ -118,15 +121,18 @@ class EventManager:
     - Tracks simulation metrics
     """
 
+    MAX_EVENTS: int = 2000  # F50: Bounded event history to prevent unbounded memory growth
+
     def __init__(self, log_dir: str = "logs", verbose: bool = True):
         self.metrics = SimulationMetrics()
-        self.event_history: list = []  # List of (step, EventType, message) tuples
+        self.event_history: list = []  # List of (step, EventType, message) tuples — bounded (F50)
         self._observers: dict = {}     # EventType -> list of callbacks
         self._current_step: int = 0
         self._verbose = verbose
 
         # Set up Python logging
-        self._logger = logging.getLogger("CityMind")
+        self._logger = logging.getLogger(f"CityMind.{uuid.uuid4().hex}")
+        self._logger.propagate = False
         self._logger.setLevel(logging.DEBUG)
         self._logger.handlers.clear()
 
@@ -139,7 +145,7 @@ class EventManager:
 
         # File handler
         os.makedirs(log_dir, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         log_file = os.path.join(log_dir, f"simulation_{timestamp}.log")
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_handler.setLevel(logging.DEBUG)
@@ -148,6 +154,12 @@ class EventManager:
         self._logger.addHandler(file_handler)
 
         self.log_file_path = log_file
+
+    def close(self):
+        """Release file descriptors when a simulation is replaced."""
+        for handler in list(self._logger.handlers):
+            handler.close()
+            self._logger.removeHandler(handler)
 
     def set_step(self, step: int):
         """Update the current simulation step for log context."""
@@ -165,8 +177,12 @@ class EventManager:
         step_str = f"STEP {self._current_step:02d}" if self._current_step > 0 else "INIT"
         formatted = f"[{step_str}] [{event_type.name:10s}] {message}"
 
-        # Store in history
+        # Store in history (F50: bounded to prevent unbounded memory growth)
         self.event_history.append((self._current_step, event_type, message))
+        if len(self.event_history) > self.MAX_EVENTS:
+            # Trim oldest 10% to avoid trimming on every append
+            trim_to = int(self.MAX_EVENTS * 0.9)
+            self.event_history = self.event_history[-trim_to:]
 
         # Log via Python logging
         log_fn = getattr(self._logger, level, self._logger.info)

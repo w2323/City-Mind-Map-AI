@@ -1,0 +1,44 @@
+.....................................F.................................. [ 46%]
+........................................................................ [ 92%]
+...........                                                              [100%]
+================================== FAILURES ===================================
+__________ test_spacing_directions_and_original_medical_positions[0] __________
+
+seed = 0
+
+    @pytest.mark.parametrize('seed',[0,1,2,3,7,11,19,42,99,2026])
+    def test_spacing_directions_and_original_medical_positions(seed):
+        baseline={0:[6,56,77,142,162,169],1:[22,93,101,149,158,183],2:[36,42,47,175,181,192],
+                  3:[7,46,128,132,140,151],7:[8,61,116,142,152,190],11:[23,31,114,117,125,181],
+                  19:[24,61,142,145,167,193],42:[38,47,159,163,170,181],99:[54,62,88,141,153,160],2026:[37,43,63,147,158,166]}
+        model=Simulation(seed=seed,verbose=False)
+        try:
+            model.initialize()
+            graph=model.graph
+>           assert model.state.medical_network.centers==baseline[seed]
+E           assert [5, 56, 77, 142, 162, 168] == [6, 56, 77, 142, 162, 169]
+E             
+E             At index 0 diff: 5 != 6
+E             Use -v to get more diff
+
+tests\test_crime_heatmap.py:95: AssertionError
+---------------------------- Captured stderr call -----------------------------
+[INIT] [SIMULATION] Initializing CityMind simulation...
+[INIT] [LAYOUT    ] Running CSP solver for city layout...
+[INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[INIT] [ROADS     ] Building road network (MST + redundancy)...
+[INIT] [ROADS     ] Road network built. 278 active edges.
+[INIT] [ML        ] Preparing the existing medical-planning cost model...
+[INIT] [ML        ] Medical-planning cost model ready. HIGH=129, MEDIUM=3, LOW=93
+[INIT] [ML        ] Initial planning-cost priority areas: I3, H7, A14, J5, I11, K13, K9, C15, J14, L4
+[INIT] [ML        ] Live crime heatmap ready: bank assets, residential context and reported incidents.
+[INIT] [AMBULANCE ] GA medical centers: F1, L4, C6, H10, M11, D12
+[INIT] [ROUTING   ] Creating A* emergency router...
+[INIT] [POLICE    ] Police station PS-01 opened at A3 with 4 patrol car(s).
+[INIT] [POLICE    ] Police station PS-02 opened at C8 with 3 patrol car(s).
+[INIT] [POLICE    ] Police station PS-03 opened at G13 with 3 patrol car(s).
+[INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+=========================== short test summary info ===========================
+FAILED tests/test_crime_heatmap.py::test_spacing_directions_and_original_medical_positions[0]
+1 failed, 154 passed in 199.35s (0:03:19)

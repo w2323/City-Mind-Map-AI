@@ -46,7 +46,8 @@ class KMeans:
     Groups nodes into k clusters based on feature similarity.
     """
 
-    def __init__(self, k: int = None, max_iter: int = None):
+    def __init__(self, k: int = None, max_iter: int = None, rng=None):
+        self.rng = rng if rng is not None else random.Random()
         self.k = k or SimConfig.KMEANS_K
         self.max_iter = max_iter or SimConfig.KMEANS_MAX_ITER
         self.centroids: list = []
@@ -58,7 +59,7 @@ class KMeans:
         features: {node_id: [f1, f2]}
         """
         node_ids = list(features.keys())
-        random.shuffle(node_ids)
+        self.rng.shuffle(node_ids)
 
         # Initialize centroids from k random data points
         self.centroids = [list(features[node_ids[i]]) for i in range(self.k)]
@@ -89,7 +90,7 @@ class KMeans:
                     ]
                 else:
                     # Empty cluster: reset centroid to random point
-                    self.centroids[ci] = list(features[random.choice(node_ids)])
+                    self.centroids[ci] = list(features[self.rng.choice(node_ids)])
 
     def predict(self, vec: list) -> int:
         """Predict cluster index for a feature vector."""
@@ -305,7 +306,7 @@ class DecisionTreeClassifier:
 
 
 
-def run_crime_risk_pipeline(graph: CityGraph) -> tuple:
+def run_crime_risk_pipeline(graph: CityGraph, rng=None) -> tuple:
     """
     Execute the complete crime risk prediction pipeline:
     1. Feature extraction (population density + industrial proximity)
@@ -324,7 +325,7 @@ def run_crime_risk_pipeline(graph: CityGraph) -> tuple:
     features = compute_features(graph)
 
     # Step 2: K-Means clustering
-    kmeans = KMeans()
+    kmeans = KMeans(rng=rng)
     kmeans.fit(features)
 
     # Step 3: Generate synthetic crime dataset
@@ -334,11 +335,25 @@ def run_crime_risk_pipeline(graph: CityGraph) -> tuple:
     dt = DecisionTreeClassifier()
     dt.fit(dataset)
 
-    # Step 5: Predict risk for each node and update graph
-    for nid in graph.nodes:
-        predicted_risk = dt.predict(features[nid])
-        risk_index = features[nid][0] + features[nid][1]  # Combined feature score
-        graph.update_risk(nid, predicted_risk, risk_index)
+    routers = {getattr(callback, '__self__', None) for callback in graph._risk_observers}
+    routers = [r for r in routers if hasattr(r, 'begin_batch_block')]
+    for router in routers:
+        router.begin_batch_block()
+    try:
+        # Step 5: Predict risk for each node and update graph
+        for nid in graph.nodes:
+            predicted_risk = dt.predict(features[nid])
+            risk_index = features[nid][0] + features[nid][1]  # Combined feature score
+            graph.nodes[nid].risk_features = {
+                "population_density": round(features[nid][0], 6),
+                "industrial_proximity": round(features[nid][1], 6),
+            }
+            graph.nodes[nid].cluster_id = kmeans.labels[nid]
+            graph.update_risk(nid, predicted_risk, risk_index)
+    
+    finally:
+        for router in routers:
+            router.end_batch_block()
 
     return kmeans, dt
 

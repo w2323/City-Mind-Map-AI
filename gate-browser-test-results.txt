@@ -1,0 +1,41 @@
+
+> citymind-frontend@1.0.0 test:e2e
+> playwright test
+
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 271 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=52, MEDIUM=113, LOW=60
+[WebServer] [INIT] [ML        ] 10 police officers deployed to nodes: I13, K3, G11, G8, N14, N2, E3, J2, N5, D3
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: H2, B3, N5, C11, L11, G13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] INFO:     Started server process [27152]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8101 (Press CTRL+C to quit)
+[WebServer] (node:23588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:12132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 9:53:31 pm [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+[WebServer] [STEP 02] [SIMULATION] --- Step 2 ---
+[WebServer] [STEP 03] [SIMULATION] --- Step 3 ---
+[WebServer] 9:53:57 pm [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] 9:53:57 pm [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] 9:54:01 pm [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+  ok 1 e2e\prototype.spec.js:3:1 › live controls use Python state, GA, metrics export and comparison views (35.0s)
+[WebServer] 9:54:06 pm [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 03] [ROADS     ] Gate of Death 8 unleashed at H8: radius 8, 243 roads restricted to ambulances.
+[WebServer] [STEP 03] [ROADS     ] Gate restrictions cleared from 243 roads. Full road blocks remain in effect.
+  ok 2 e2e\prototype.spec.js:28:1 › Gate of Death blocks normal traffic while preserving ambulance routes (15.6s)
+
+  2 passed (55.6s)

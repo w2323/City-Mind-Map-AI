@@ -1,0 +1,28 @@
+[INIT] [SIMULATION] Initializing CityMind simulation...
+[INIT] [LAYOUT    ] Running CSP solver for city layout...
+[INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[INIT] [ROADS     ] Building road network (MST + redundancy)...
+[INIT] [ROADS     ] Road network built. 279 active edges.
+[INIT] [ML        ] Running crime risk prediction pipeline...
+[INIT] [ML        ] Crime risk prediction complete. HIGH=147, MEDIUM=0, LOW=78
+[INIT] [ML        ] 10 police officers deployed to nodes: M5, K9, B7, F5, G11, F4, K4, I5, E7, G9
+[INIT] [AMBULANCE ] GA medical centers: C1, J4, N9, E10, I11, C13
+[INIT] [ROUTING   ] Creating A* emergency router...
+[INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[INIT] [ROADS     ] Road O15 - O14 fully blocked.
+[INIT] [FLOOD     ] Manual road closure: O15 <-> O14
+[INIT] [ROADS     ] Road O15 - N15 fully blocked.
+[INIT] [FLOOD     ] Manual road closure: O15 <-> N15
+[INIT] [AMBULANCE ] Medical centers cut off from: O15
+[INIT] [AMBULANCE ] Suggested new medical center: O15 reconnects service to 1 node(s).
+[INIT] [AMBULANCE ] Helicopter dispatched to O15; landing fuel reserved.
+[STEP 01] [SIMULATION] --- Step 1 ---
+[STEP 02] [SIMULATION] --- Step 2 ---
+[STEP 03] [SIMULATION] --- Step 3 ---
+[STEP 03] [ROADS     ] Gate restrictions cleared from 0 roads. Full road blocks remain in effect.
+[STEP 03] [ROADS     ] Gate of Death 1 unleashed at H8: radius 1, 10 roads restricted to ambulances.
+[STEP 03] [ROADS     ] Gate restrictions cleared from 10 roads. Full road blocks remain in effect.
+[STEP 03] [ROADS     ] Gate of Death 8 unleashed at H8: radius 8, 253 roads restricted to ambulances.
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.14.3)
+Rendered all nine screens to C:\Users\Saad\OneDrive\Desktop\City-Mind-Map-AI-main\City-Mind-Map-AI-main\frontend-2d-pygame\artifacts

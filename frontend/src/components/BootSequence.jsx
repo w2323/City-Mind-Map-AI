@@ -5,15 +5,8 @@
 
 import { useState, useEffect } from 'react';
 
-const BOOT_LINES = [
-  { text: '[00:00] Loading city topology...', type: 'normal' },
-  { text: '[00:01] Initializing ambulance network...', type: 'normal' },
-  { text: '[00:02] Calibrating ML prediction engines...', type: 'normal' },
-  { text: '[00:03] Connecting emergency agents...', type: 'normal' },
-  { text: '[00:04] ████████████ READY', type: 'ready' },
-];
-
-export default function BootSequence({ onComplete }) {
+export default function BootSequence({ onComplete, events = [] }) {
+  const [BOOT_LINES] = useState(() => events.slice(-5).map(e => ({ text: e.message, type: e.type === 'SIMULATION' ? 'ready' : 'normal' })));
   const [phase, setPhase] = useState(0);
   const [visibleLines, setVisibleLines] = useState(0);
   const [exiting, setExiting] = useState(false);
@@ -66,7 +59,7 @@ export default function BootSequence({ onComplete }) {
       {phase >= 1 && (
         <div className="boot-terminal">
           <div style={{ marginBottom: 12, fontWeight: 600, color: 'var(--blue-vibrant)' }}>
-            CITYMIND v2.0 — Initializing intelligence systems...
+            CITYMIND — Backend event snapshot
           </div>
           {BOOT_LINES.slice(0, visibleLines).map((line, i) => (
             <div key={i} className="boot-line" style={{ color: line.type === 'ready' ? 'var(--green-alive)' : 'var(--text-secondary)' }}>

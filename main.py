@@ -42,6 +42,8 @@ Examples:
                         help="Output final state as JSON (for API integration)")
 
     args = parser.parse_args()
+    if args.steps < 1:
+        parser.error("--steps must be positive")
 
     # Apply CLI overrides to config
     SimConfig.MAX_STEPS = args.steps
@@ -52,7 +54,7 @@ Examples:
     print("=" * 60)
     print("  CityMind — AI-Based Smart City Simulation")
     print("  Backend-Only Mode (No GUI)")
-    print(f"  Steps: {args.steps} | Seed: {args.seed or 'random'}")
+    print(f"  Steps: {args.steps} | Seed: {args.seed if args.seed is not None else 'random'}")
     print("=" * 60)
     print()
 
