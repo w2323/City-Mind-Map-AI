@@ -2,7 +2,6 @@
    CITYMIND OS v2.0 — Bright & Immersive Design System
    ═══════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 :root {
   /* Bright accent colors */
@@ -608,3 +607,21 @@ code, .mono {
 @keyframes fadeIn {
   to { opacity: 1; }
 }
+
+.police-panel { box-shadow: 0 16px 48px #03081680; }
+.police-panel h2 { font-size: 20px; margin-bottom: 12px; }
+.police-panel h3 { font-size: 14px; margin: 18px 0 8px; color: #c4b5fd; }
+.police-panel p { margin: 10px 0; line-height: 1.5; }
+.police-panel label { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.police-panel input:not([type=checkbox]):not([type=range]), .police-panel select {
+  background: #17243a; color: #f1f5f9; border: 1px solid #475569; border-radius: 6px; padding: 7px; max-width: 185px;
+}
+.police-panel input[type=range] { width: 130px; accent-color: #a78bfa; }
+.police-panel button {
+  background: #43308b; color: #f5f3ff; border: 1px solid #8b5cf6; border-radius: 6px; padding: 8px 10px; cursor: pointer; margin: 3px 0;
+}
+.police-panel button:hover:enabled { background: #5b42aa; }
+.police-panel button:disabled { opacity: .45; cursor: default; }
+.police-panel form > button { width: 100%; background: #6d28d9; }
+.police-panel hr { border: 0; border-top: 1px solid #334155; margin: 16px 0; }
+.police-panel td, .police-panel th { text-align: left; padding: 6px 3px; border-bottom: 1px solid #334155; }

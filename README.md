@@ -1,3 +1,7 @@
+Current UI and ambulance behavior: [frontend-2d-pygame/DISPATCH_WORKSPACE.md](frontend-2d-pygame/DISPATCH_WORKSPACE.md). The explicit depot-fleet workflow supersedes earlier descriptions of preset civilian missions and GA redeployment.
+
+For current setup, API behavior, verification, and prototype limits, see [PROTOTYPE_NOTES.md](PROTOTYPE_NOTES.md).
+
 # 🏙️ CityMind — Urban Intelligence Simulation
 
 > **An AI-driven urban simulation and emergency management platform combining Constraint Satisfaction, Graph Optimization, Genetic Algorithms, Dynamic A\* Pathfinding, and Machine Learning within a unified real-time 3D city environment.**
@@ -67,26 +71,26 @@ This system uses a decoupled architecture. You will need two terminal windows: o
 
 1. Start the Backend (FastAPI / AI Engine)
 
-The backend requires Python 3.9+.
+The backend requires Python 3.11+.
 
 # Navigate to the project root
-cd CityMind_Submission
+cd City-Mind-Map-AI-main
 
 # Install required Python dependencies
 pip install -r requirements.txt
 
 # Start the simulation engine and API
-uvicorn main:app --reload --port 8000
+python -m uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
 
 
 The backend will initialize the city graph, run the CSP layout, build the MST roads, train the ML models, and wait for frontend connections.
 
 2. Start the Frontend (React 3D Dashboard)
 
-The frontend requires Node.js (v18+ recommended).
+The frontend requires Node.js (v24 recommended).
 
 # Open a new terminal and navigate to the frontend folder
-cd CityMind_Submission/frontend
+cd frontend
 
 # Install React dependencies (Vite, Three.js, etc.)
 npm install

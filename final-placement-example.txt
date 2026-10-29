@@ -1,0 +1,20 @@
+[INIT] [SIMULATION] Initializing CityMind simulation...
+[INIT] [LAYOUT    ] Running CSP solver for city layout...
+[INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[INIT] [ROADS     ] Building road network (MST + redundancy)...
+[INIT] [ROADS     ] Road network built. 279 active edges.
+[INIT] [ML        ] Preparing the existing medical-planning cost model...
+[INIT] [ML        ] Medical-planning cost model ready. HIGH=152, MEDIUM=0, LOW=73
+[INIT] [ML        ] Initial planning-cost priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[INIT] [ML        ] Live crime heatmap ready: bank assets, residential context and reported incidents.
+[INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[INIT] [ROUTING   ] Creating A* emergency router...
+[INIT] [POLICE    ] Police station PS-01 opened at O6 with 4 patrol car(s).
+[INIT] [POLICE    ] Police station PS-02 opened at F9 with 3 patrol car(s).
+[INIT] [POLICE    ] Police station PS-03 opened at M14 with 3 patrol car(s).
+[INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+Medical centers: ['I3', 'C4', 'J11', 'N11', 'F12', 'B13']
+{'node_id': 59, 'label': 'O4', 'protected': True, 'police_direction': 'SOUTH', 'station_id': 'PS-01', 'station_label': 'O6', 'grid_blocks': 2} hospital clearance 7
+{'node_id': 122, 'label': 'C9', 'protected': True, 'police_direction': 'EAST', 'station_id': 'PS-02', 'station_label': 'F9', 'grid_blocks': 3} hospital clearance 5
+{'node_id': 209, 'label': 'O14', 'protected': True, 'police_direction': 'WEST', 'station_id': 'PS-03', 'station_label': 'M14', 'grid_blocks': 2} hospital clearance 4

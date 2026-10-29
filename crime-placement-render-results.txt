@@ -1,0 +1,39 @@
+[INIT] [SIMULATION] Initializing CityMind simulation...
+[INIT] [LAYOUT    ] Running CSP solver for city layout...
+[INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[INIT] [ROADS     ] Building road network (MST + redundancy)...
+[INIT] [ROADS     ] Road network built. 279 active edges.
+[INIT] [ML        ] Preparing the existing medical-planning cost model...
+[INIT] [ML        ] Medical-planning cost model ready. HIGH=152, MEDIUM=0, LOW=73
+[INIT] [ML        ] Initial planning-cost priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[INIT] [ML        ] Live crime heatmap ready: bank assets, residential context and reported incidents.
+[INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[INIT] [ROUTING   ] Creating A* emergency router...
+[INIT] [POLICE    ] Police station PS-01 opened at O6 with 4 patrol car(s).
+[INIT] [POLICE    ] Police station PS-02 opened at F9 with 3 patrol car(s).
+[INIT] [POLICE    ] Police station PS-03 opened at M14 with 3 patrol car(s).
+[INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[INIT] [ROADS     ] Road O15 - O14 fully blocked.
+[INIT] [FLOOD     ] Manual road closure: O15 <-> O14
+[INIT] [ROADS     ] Road O15 - N15 fully blocked.
+[INIT] [FLOOD     ] Manual road closure: O15 <-> N15
+[INIT] [AMBULANCE ] Medical centers cut off from: O15
+[INIT] [AMBULANCE ] Suggested new medical center: O15 reconnects service to 1 node(s).
+[INIT] [AMBULANCE ] Helicopter dispatched to O15; landing fuel reserved.
+[STEP 01] [SIMULATION] --- Step 1 ---
+[STEP 02] [SIMULATION] --- Step 2 ---
+[STEP 03] [SIMULATION] --- Step 3 ---
+[STEP 03] [ROADS     ] Gate restrictions cleared from 0 roads. Full road blocks remain in effect.
+[STEP 03] [ROADS     ] Gate of Death 1 unleashed at H8: radius 1, 10 roads restricted to ambulances.
+[STEP 03] [ROADS     ] Gate restrictions cleared from 10 roads. Full road blocks remain in effect.
+[STEP 03] [ROADS     ] Gate of Death 8 unleashed at H8: radius 8, 252 roads restricted to ambulances.
+[STEP 03] [ROADS     ] Gate restrictions cleared from 252 roads. Full road blocks remain in effect.
+[STEP 03] [POLICE    ] CR-0001: Disturbance reported at F8, severity 3.
+[STEP 03] [POLICE    ] CR-0001: POL-05 dispatched to F8 by normal-access road cost 1.60.
+[STEP 04] [SIMULATION] --- Step 4 ---
+[STEP 04] [POLICE    ] POL-05 arrived at F8 for CR-0001.
+[STEP 05] [SIMULATION] --- Step 5 ---
+[STEP 05] [ML        ] Crime heatmap refreshed from assets, residential context and reported incidents.
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.14.3)
+Rendered all nine screens to C:\Users\Saad\OneDrive\Desktop\City-Mind-Map-AI-main\City-Mind-Map-AI-main\frontend-2d-pygame\artifacts

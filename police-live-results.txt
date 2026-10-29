@@ -1,0 +1,2 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.14.3)
+{"stations": 4, "patrol_cars": 12, "nearest_unit": "POL-01", "physical_patrol_movement": true, "native_report_resolved": true, "joint_ambulance_rescue": true, "optional_automatic_reports": true, "gate_unreachable_report": true, "station_construction_no_teleport": true, "matched_comparison": true}

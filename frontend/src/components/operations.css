@@ -1,0 +1,11 @@
+.operations-panel {position:fixed;top:80px;left:18px;z-index:120;width:min(390px,calc(100vw - 36px));max-height:calc(100vh - 160px);overflow:auto;padding:20px;background:#111e31;border:1px solid #38bdf8;border-radius:12px;color:#edf5ff;font-size:13px;line-height:1.6;box-shadow:0 12px 40px #0008}
+.operations-panel header {display:flex;align-items:center;justify-content:space-between;gap:12px;padding-left:30px}
+.operations-panel label {display:block}
+.operations-panel h2 {font-size:18px;margin:0}
+.operations-panel h3 {margin-top:20px;border-top:1px solid #334155;padding-top:12px}
+.operations-panel button {padding:6px 9px;margin:4px 5px 4px 0;border:1px solid #45617f;border-radius:5px;background:#20334c;color:#edf5ff;cursor:pointer}
+.operations-panel button:disabled {opacity:.45;cursor:default}
+.operations-panel input,.operations-panel select {display:block;width:100%;box-sizing:border-box;background:#0a1424;color:#edf5ff;border:1px solid #45617f;border-radius:4px;padding:8px;margin:5px 0 10px}
+.operations-panel table {width:100%;text-align:left;font-size:12px}
+.operations-toolbar {position:fixed;bottom:24px;right:85px;z-index:110;display:flex;gap:6px;flex-wrap:wrap}
+.operations-toolbar button {padding:8px 12px;background:#11283e;color:#fff;border:1px solid #38bdf8;border-radius:8px;cursor:pointer}

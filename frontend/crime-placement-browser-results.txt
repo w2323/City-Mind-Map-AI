@@ -1,0 +1,111 @@
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 272 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=131, MEDIUM=9, LOW=85
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: G10, I7, J13, C1, M3, G11, A2, I8, L10, J14
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: M1, G4, J7, C8, H11, M13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at D5 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at O9 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at C15 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] INFO:     Started server process [26064]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8101 (Press CTRL+C to quit)
+[WebServer] (node:27360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:26648) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 12:51:59 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+  ok 1 e2e\prototype.spec.js:3:1 › live controls use Python state, GA, metrics export and comparison views (12.5s)
+[WebServer] 12:52:12 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 01] [ROADS     ] Gate of Death 8 unleashed at H8: radius 8, 246 roads restricted to ambulances.
+[WebServer] [STEP 01] [ROADS     ] Gate restrictions cleared from 246 roads. Full road blocks remain in effect.
+  ok 2 e2e\prototype.spec.js:28:1 › Gate of Death blocks normal traffic while preserving ambulance routes (6.5s)
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 279 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=152, MEDIUM=0, LOW=73
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at O6 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at F9 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at M14 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] 12:52:19 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [INIT] [POLICE    ] CR-0001: Injury reported at O4, severity 1.
+[WebServer] [INIT] [POLICE    ] CR-0001: POL-01 dispatched to O4 by normal-access road cost 2.80.
+[WebServer] [INIT] [ROUTING   ] E-0001: AMB-04 dispatched to O4 (route cost 7.60).
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+[WebServer] [STEP 02] [SIMULATION] --- Step 2 ---
+[WebServer] [STEP 02] [POLICE    ] POL-01 arrived at O4 for CR-0001.
+[WebServer] [STEP 03] [SIMULATION] --- Step 3 ---
+[WebServer] [STEP 04] [SIMULATION] --- Step 4 ---
+[WebServer] [STEP 04] [POLICE    ] CR-0001: police task completed; medical task is tracked separately.
+[WebServer] [STEP 05] [SIMULATION] --- Step 5 ---
+[WebServer] [STEP 05] [ML        ] Crime heatmap refreshed from assets, residential context and reported incidents.
+[WebServer] [STEP 06] [SIMULATION] --- Step 6 ---
+[WebServer] [STEP 07] [SIMULATION] --- Step 7 ---
+[WebServer] [STEP 08] [SIMULATION] --- Step 8 ---
+[WebServer] [STEP 08] [ROUTING   ] AMB-04 arrived at O4. Emergency resolved; returning to depot.
+[WebServer] [STEP 09] [SIMULATION] --- Step 9 ---
+[WebServer] [STEP 10] [SIMULATION] --- Step 10 ---
+[WebServer] [STEP 10] [ML        ] Crime heatmap refreshed from assets, residential context and reported incidents.
+  ok 3 e2e\prototype.spec.js:52:1 › police reports dispatch moving cars, coordinate medical help and compare deployments (20.0s)
+[WebServer] [INIT] [SIMULATION] Initializing CityMind simulation...
+[WebServer] [INIT] [LAYOUT    ] Running CSP solver for city layout...
+[WebServer] [INIT] [LAYOUT    ] City layout assigned successfully via CSP.
+[WebServer] [INIT] [ROADS     ] Building road network (MST + redundancy)...
+[WebServer] [INIT] [ROADS     ] Road network built. 279 active edges.
+[WebServer] [INIT] [ML        ] Running crime risk prediction pipeline...
+[WebServer] [INIT] [ML        ] Crime risk prediction complete. HIGH=152, MEDIUM=0, LOW=73
+[WebServer] [INIT] [ML        ] Initial risk-priority areas: G6, C7, D12, L4, K12, D10, F12, D5, D4, G8
+[WebServer] [INIT] [AMBULANCE ] GA medical centers: I3, C4, J11, N11, F12, B13
+[WebServer] [INIT] [ROUTING   ] Creating A* emergency router...
+[WebServer] [INIT] [POLICE    ] Police station PS-01 opened at O6 with 4 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-02 opened at F9 with 3 patrol car(s).
+[WebServer] [INIT] [POLICE    ] Police station PS-03 opened at M14 with 3 patrol car(s).
+[WebServer] [INIT] [ROUTING   ] Medical-center fleet ready. Waiting for an operator to enter an emergency node.
+[WebServer] [INIT] [SIMULATION] Initialization complete. All 5 challenges ready.
+[WebServer] [STEP 01] [SIMULATION] --- Step 1 ---
+[WebServer] [STEP 02] [SIMULATION] --- Step 2 ---
+[WebServer] [STEP 03] [SIMULATION] --- Step 3 ---
+[WebServer] 12:52:39 am [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[WebServer] [STEP 03] [POLICE    ] CR-0001: Theft reported at A1, severity 1.
+[WebServer] [STEP 03] [POLICE    ] CR-0001: POL-06 dispatched to A1 by normal-access road cost 10.00.
+[WebServer] [STEP 04] [SIMULATION] --- Step 4 ---
+[WebServer] [STEP 05] [SIMULATION] --- Step 5 ---
+[WebServer] [STEP 05] [ML        ] Crime heatmap refreshed from assets, residential context and reported incidents.
+[WebServer] [STEP 06] [SIMULATION] --- Step 6 ---
+[WebServer] [STEP 07] [SIMULATION] --- Step 7 ---
+[WebServer] [STEP 08] [SIMULATION] --- Step 8 ---
+[WebServer] [STEP 09] [SIMULATION] --- Step 9 ---
+[WebServer] [STEP 10] [SIMULATION] --- Step 10 ---
+[WebServer] [STEP 10] [ML        ] Crime heatmap refreshed from assets, residential context and reported incidents.
+[WebServer] [STEP 11] [SIMULATION] --- Step 11 ---
+[WebServer] [STEP 12] [SIMULATION] --- Step 12 ---
+[WebServer] [STEP 13] [SIMULATION] --- Step 13 ---
+[WebServer] [STEP 14] [SIMULATION] --- Step 14 ---
+[WebServer] [STEP 14] [POLICE    ] POL-06 arrived at A1 for CR-0001.
+[WebServer] [STEP 15] [SIMULATION] --- Step 15 ---
+[WebServer] [STEP 15] [ML        ] Crime heatmap refreshed from assets, residential context and reported incidents.
+[WebServer] [STEP 16] [SIMULATION] --- Step 16 ---
+[WebServer] [STEP 16] [POLICE    ] CR-0001: police task completed; medical task is tracked separately.
+[WebServer] [STEP 17] [SIMULATION] --- Step 17 ---
+  ok 4 e2e\prototype.spec.js:89:1 › patrol OFF parks other cars throughout manual crime dispatch (22.1s)
+
+  4 passed (1.1m)

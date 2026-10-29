@@ -35,13 +35,15 @@ def _node_rc(graph, nid):
 class CSPSolver:
     """Hybrid Urban Generation System — 10-phase staged pipeline."""
 
-    def __init__(self, graph: CityGraph):
+    def __init__(self, graph: CityGraph, rng=None):
         self.graph = graph
+        self.rng = rng if rng is not None else random.Random()
         self.assignment = {}
         self.districts = []
         self._fail_reason = ""
 
     def solve(self) -> bool:
+        import traceback as _tb
         for attempt in range(20):
             self.assignment = {nid: SimConfig.EMPTY for nid in self.graph.nodes}
             self.districts = []
@@ -57,7 +59,16 @@ class CSPSolver:
                 self._phase8_repair()
                 if self._phase7_validate():
                     return True
-            except Exception:
+            except Exception as _e:
+                # F44 FIX: Log exception details before continuing.
+                # This distinguishes real bugs from expected constraint infeasibility.
+                # Expected infeasibility raises generic exceptions; programming bugs
+                # will appear here with full tracebacks in debug logs.
+                import logging as _log
+                _log.getLogger("CityMind").debug(
+                    f"CSP attempt {attempt + 1}/20 failed with exception: "
+                    f"{type(_e).__name__}: {_e}\n{_tb.format_exc()}"
+                )
                 continue
         return False
 
@@ -74,8 +85,8 @@ class CSPSolver:
         jitter = 2
         centers = []
         for ar, ac in quadrant_anchors:
-            cr = max(1, min(R - 2, ar + random.randint(-jitter, jitter)))
-            cc = max(1, min(C - 2, ac + random.randint(-jitter, jitter)))
+            cr = max(1, min(R - 2, ar + self.rng.randint(-jitter, jitter)))
+            cc = max(1, min(C - 2, ac + self.rng.randint(-jitter, jitter)))
             centers.append((cr, cc))
         nd = len(centers)
         self.districts = [District(i, cr, cc) for i, (cr, cc) in enumerate(centers)]
@@ -106,6 +117,30 @@ class CSPSolver:
         self._place_power_plants()
         self._place_schools()
         self._place_depots()
+        self._place_banks()
+
+    def _place_banks(self):
+        """Spread bank plots across districts before residential growth fills them."""
+        placed=[]
+        used_districts=set()
+        for _ in range(SimConfig.REQUIRED_COUNTS[SimConfig.BANK]):
+            candidates=[n for n in self.graph.nodes if self.assignment[n]==SimConfig.EMPTY
+                        and n not in self._industrial_zone and n not in self._open_space_zone]
+            interior=[n for n in candidates if 2<=self.graph.nodes[n].row<SimConfig.GRID_ROWS-2
+                      and 2<=self.graph.nodes[n].col<SimConfig.GRID_COLS-2]
+            candidates=interior or candidates
+            if not candidates:
+                raise ValueError('No eligible plot remains for a bank')
+            def score(n):
+                distance=min((_mdist(*_node_rc(self.graph,n),*_node_rc(self.graph,b)) for b in placed),default=0)
+                return (self._district_of(n).id not in used_districts,distance)
+            self.rng.shuffle(candidates)
+            node=max(candidates,key=score)
+            self.assignment[node]=SimConfig.BANK
+            district=self._district_of(node)
+            district.add(SimConfig.BANK)
+            used_districts.add(district.id)
+            placed.append(node)
 
     def _place_hospitals(self):
         count = SimConfig.REQUIRED_COUNTS[SimConfig.HOSPITAL]
@@ -115,7 +150,7 @@ class CSPSolver:
         for d in self.districts:
             placed_in_d = 0
             cells = list(d.cells)
-            random.shuffle(cells)
+            self.rng.shuffle(cells)
             for nid in cells:
                 if placed_in_d >= per_district:
                     break
@@ -133,7 +168,7 @@ class CSPSolver:
         remaining = count - len(placed)
         if remaining > 0:
             all_cells = [nid for nid in self.graph.nodes if self.assignment[nid] == SimConfig.EMPTY and nid not in self._industrial_zone]
-            random.shuffle(all_cells)
+            self.rng.shuffle(all_cells)
             for nid in all_cells:
                 if remaining <= 0:
                     break
@@ -162,7 +197,7 @@ class CSPSolver:
                         break
             if ok:
                 candidates.append(nid)
-        random.shuffle(candidates)
+        self.rng.shuffle(candidates)
         placed = []
         for nid in candidates:
             if len(placed) >= count:
@@ -179,7 +214,7 @@ class CSPSolver:
                 placed.append(nid)
         if len(placed) < count:
             fallback = [nid for nid in self.graph.nodes if self.assignment[nid] == SimConfig.EMPTY and nid not in self._open_space_zone]
-            random.shuffle(fallback)
+            self.rng.shuffle(fallback)
             for nid in fallback:
                 if len(placed) >= count:
                     break
@@ -210,7 +245,7 @@ class CSPSolver:
             if near_res_core:
                 continue
             candidates.append(nid)
-        random.shuffle(candidates)
+        self.rng.shuffle(candidates)
         placed = []
         used_districts = set()
         for nid in candidates:
@@ -256,7 +291,7 @@ class CSPSolver:
             R, C = SimConfig.GRID_ROWS, SimConfig.GRID_COLS
             if 2 <= node.row <= R - 3 and 2 <= node.col <= C - 3:
                 score += 2
-            candidates.append((score, random.random(), nid))
+            candidates.append((score, self.rng.random(), nid))
         candidates.sort(reverse=True)
         placed = []
         used_districts = set()
@@ -350,13 +385,13 @@ class CSPSolver:
                 p = 1.0 - (depth * 0.02)
                 if nid in self._open_space_zone:
                     p -= 0.4
-                if not near_ind and p > 0 and random.random() < p:
+                if not near_ind and p > 0 and self.rng.random() < p:
                     self.assignment[nid] = SimConfig.RESIDENTIAL
                     self._district_of(nid).add(SimConfig.RESIDENTIAL)
                     placed += 1
             if depth < 12:
                 nbs = list(self.graph.get_grid_neighbors(nid))
-                random.shuffle(nbs)
+                self.rng.shuffle(nbs)
                 for nb in nbs:
                     if nb not in visited:
                         visited.add(nb)
@@ -372,7 +407,7 @@ class CSPSolver:
                 if placed >= total_target:
                     break
                 cells = [nid for nid in d.cells if self.assignment[nid] == SimConfig.EMPTY]
-                random.shuffle(cells)
+                self.rng.shuffle(cells)
                 added = 0
                 for nid in cells:
                     if placed >= total_target or added >= batch:
@@ -393,7 +428,7 @@ class CSPSolver:
         if placed < total_target:
             empties = [nid for nid in self.graph.nodes
                        if self.assignment[nid] == SimConfig.EMPTY]
-            random.shuffle(empties)
+            self.rng.shuffle(empties)
             for nid in empties:
                 if placed >= total_target:
                     break
@@ -418,11 +453,11 @@ class CSPSolver:
                 else:
                     min_d = 5
                 if min_d <= 2:
-                    node.population = random.randint(int(hi * 0.7), hi)
+                    node.population = self.rng.randint(int(hi * 0.7), hi)
                 elif min_d <= 4:
-                    node.population = random.randint(int((lo + hi) / 2), int(hi * 0.8))
+                    node.population = self.rng.randint(int((lo + hi) / 2), int(hi * 0.8))
                 else:
-                    node.population = random.randint(lo, int((lo + hi) / 2))
+                    node.population = self.rng.randint(lo, int((lo + hi) / 2))
             else:
                 node.population = pop_cfg
 
@@ -434,7 +469,7 @@ class CSPSolver:
         target_max = int(total * SimConfig.EMPTY_RATIO_MAX)
         if empty_count > target_max:
             empties = [nid for nid, t in self.assignment.items() if t == SimConfig.EMPTY]
-            random.shuffle(empties)
+            self.rng.shuffle(empties)
             services = [nid for nid, t in self.assignment.items() if t in (SimConfig.HOSPITAL, SimConfig.SCHOOL)]
             hospitals = [nid for nid, t in self.assignment.items() if t == SimConfig.HOSPITAL]
             for nid in empties:
@@ -519,7 +554,7 @@ class CSPSolver:
             deficit = req - counts.get(tname, 0)
             if deficit > 0 and tname == SimConfig.RESIDENTIAL:
                 empties = [nid for nid, t in self.assignment.items() if t == SimConfig.EMPTY]
-                random.shuffle(empties)
+                self.rng.shuffle(empties)
                 for nid in empties[:deficit]:
                     self.assignment[nid] = SimConfig.RESIDENTIAL
 

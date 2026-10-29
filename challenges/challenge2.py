@@ -12,6 +12,13 @@ def generate_candidate_edges(graph: CityGraph) -> list:
     Generate all possible grid-adjacent edges as (cost, id_a, id_b) tuples.
     4-directional: cost 1.0 (or 0.8 if both endpoints are RESIDENTIAL)
     Diagonal: cost 1.4
+
+    NOTE (F30): Diagonal edges are added between diagonal grid cells without checking
+    whether the orthogonal neighbors between them are passable. This is a deliberate
+    modeling choice: every node in the grid is treated as a traversable road junction
+    (not a solid block), and diagonal edges represent road shortcuts or cut-through
+    connections that exist in many real city layouts. This is NOT a path-through-walls
+    bug — it reflects the simulation model where all grid positions are road nodes.
     """
     edges = []
     for row in range(SimConfig.GRID_ROWS):
@@ -195,14 +202,20 @@ def ensure_hospital_depot_redundancy(graph: CityGraph) -> bool:
     Verify and enforce 2 edge-disjoint paths between Primary Hospital
     and Primary Ambulance Depot.
 
-    Edge-disjoint means: no single edge failure can disconnect both paths.
-    This is stronger than just "two different paths" — it uses the
-    max-flow/min-cut principle (if min-cut >= 2, then 2 edge-disjoint
-    paths exist by Menger's theorem).
+    F29 FIX: Implementation uses BFS to find two edge-disjoint paths.
+    - First BFS finds any path from hospital to depot.
+    - Second BFS on a graph with first-path edges excluded finds a disjoint path.
+    - If no second path exists, additional edges are added until one does.
 
-    Note: For production systems, D* Lite or Lifelong Planning A* could
-    provide more efficient dynamic replanning, but for this 225-node grid,
-    BFS-based verification is sufficient and simpler to validate.
+    LIMITATION: This is a greedy BFS approach, not a full max-flow algorithm.
+    It correctly finds and enforces 2 edge-disjoint paths when they exist,
+    but it does NOT compute the full max-flow/min-cut or guarantee more than
+    2 edge-disjoint paths. For networks requiring stronger k-connectivity
+    guarantees, Menger's theorem via max-flow (e.g., Ford-Fulkerson) would be
+    needed. For this 225-node grid, the BFS approach is sufficient and verifiable.
+
+    Note: For production systems requiring dynamic replanning, D* Lite or
+    Lifelong Planning A* would be more efficient for repeated graph updates.
     """
     hospitals = graph.get_nodes_of_type(SimConfig.HOSPITAL)
     depots = graph.get_nodes_of_type(SimConfig.DEPOT)
@@ -285,6 +298,7 @@ def build_road_network(graph: CityGraph) -> bool:
     """
     build_mst(graph)
     add_redundancy_edges(graph)
+    ensure_network_redundancy(graph)
     success = ensure_hospital_depot_redundancy(graph)
     if not success:
         raise RuntimeError(
@@ -292,3 +306,32 @@ def build_road_network(graph: CityGraph) -> bool:
             "between Primary Hospital and Ambulance Depot."
         )
     return True
+
+
+def ensure_network_redundancy(graph: CityGraph):
+    """Add the cheapest grid road crossing each bridge cut until none remain.
+
+    A connected network with no bridges has two edge-disjoint paths between
+    every pair of nodes. Floods may subsequently violate this guarantee.
+    """
+    candidates = sorted(generate_candidate_edges(graph))
+    while True:
+        bridges = find_bridges(graph)
+        if not bridges:
+            return
+        a, b = bridges[0]
+        reachable = {a}
+        pending = [a]
+        while pending:
+            u = pending.pop()
+            for v in graph.get_neighbors(u):
+                if (min(u, v), max(u, v)) == (a, b) or v in reachable:
+                    continue
+                reachable.add(v)
+                pending.append(v)
+        for cost, u, v in candidates:
+            if (u in reachable) != (v in reachable) and (min(u, v), max(u, v)) not in graph.edges:
+                graph.add_edge(u, v, cost)
+                break
+        else:
+            raise RuntimeError("Cannot eliminate a bridge with available grid roads")

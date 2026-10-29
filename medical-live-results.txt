@@ -1,0 +1,4 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.14.3)
+{"connected": true, "step": 1, "native_route_valid": true, "optimization": "completed", "export": "C:\\Users\\Saad\\OneDrive\\Desktop\\City-Mind-Map-AI-main\\City-Mind-Map-AI-main\\exports\\citymind_20261023_210642_551765.csv", "screens_rendered": 9}
+{"typed_node": "G2", "nearest_unit": "AMB-01", "radius_slider": 1.5, "resolved": true, "returned_to_depot": true, "no_preset_emergencies": true}
+{"isolated_node": "O15", "air_button_unlocked": true, "native_landing_edit": true, "air_rescue_resolved": true, "ambulance_delivery": "AMB-05", "landing_fuel": 85.0015, "refueled": true}

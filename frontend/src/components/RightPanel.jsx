@@ -1,20 +1,12 @@
 import { useEffect, useRef } from 'react';
-
-const NODE_NAMES = {
-  RESIDENTIAL: 'Residential Zone',
-  HOSPITAL: 'Medical Center',
-  SCHOOL: 'Education Complex',
-  INDUSTRIAL: 'Industrial District',
-  POWER_PLANT: 'Power Station',
-  DEPOT: 'Ambulance Depot',
-};
+import {sectorInfo,sectorText} from '../presentation/sectors';
 
 export default function RightPanel({ selectedNode, graph, state, stats, onClose }) {
   const isOpen = selectedNode !== null;
-  const node = isOpen ? graph?.nodes?.[String(selectedNode)] : null;
+  const node = isOpen ? graph?.nodes?.find(n=>n.id===selectedNode) : null;
   const risk = state?.risk_predictions?.[String(selectedNode)] || 'LOW';
   const ambulances = state?.ambulances || [];
-  const police = (state?.police_deployments || []).map(p => p.node_id);
+  const police = (state?.police?.units || []).map(p => p.position);
   const events = stats?.events || [];
   const logRef = useRef(null);
 
@@ -28,7 +20,8 @@ export default function RightPanel({ selectedNode, graph, state, stats, onClose 
   }
 
   const type = node.node_type || 'EMPTY';
-  const typeName = NODE_NAMES[type] || type;
+  const info=sectorInfo(type);
+  const typeName = info.name;
   const isAmb = ambulances.includes(selectedNode);
   const isPol = police.includes(selectedNode);
 
@@ -37,8 +30,9 @@ export default function RightPanel({ selectedNode, graph, state, stats, onClose 
       {/* Header */}
       <div style={{ padding: 20, borderBottom: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <div className="panel__title" style={{ marginBottom: 4, color: 'var(--blue-vibrant)' }}>Node {node.label || selectedNode} — {typeName}</div>
-          <div style={{ fontSize: 10, color: 'var(--text-tertiary)' }}>Grid Ref: {node.label} ({node.row}, {node.col})</div>
+          <div className="panel__title" style={{ marginBottom: 4, color: 'var(--blue-vibrant)' }}>Sector {node.label || selectedNode} — {typeName}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-tertiary)' }}>Grid Ref: {node.label} · Row {node.label.match(/^[A-Z]+/)?.[0]} · Column {node.label.match(/\d+$/)?.[0]}</div>
+          <div style={{fontSize:11,marginTop:6}}>{info.description}</div>
         </div>
         <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.05)', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 16, fontWeight: 'bold' }}>×</button>
       </div>
@@ -48,13 +42,13 @@ export default function RightPanel({ selectedNode, graph, state, stats, onClose 
         <div className="panel__title">REAL-TIME METRICS</div>
         <div className="metrics-grid">
           <div className="metric-card">
-            <span className="metric-card__label">Population</span>
+            <span className="metric-card__label">Sector population</span>
             <span className="metric-card__value" style={{ color: 'var(--text-primary)' }}>
-              {Math.floor((node.population_density || 0) * 10000).toLocaleString()}
+              {(node.population ?? 0).toLocaleString()}
             </span>
           </div>
           <div className="metric-card">
-            <span className="metric-card__label">Risk Level</span>
+            <span className="metric-card__label">Sector crime level</span>
             <span style={{ fontSize: 14, fontWeight: 700, color: risk === 'HIGH' ? 'var(--red-alert)' : risk === 'MEDIUM' ? 'var(--orange-warm)' : 'var(--green-alive)' }}>{risk}</span>
           </div>
           <div className="metric-card">
@@ -64,43 +58,24 @@ export default function RightPanel({ selectedNode, graph, state, stats, onClose 
             </span>
           </div>
           <div className="metric-card">
-            <span className="metric-card__label">Type</span>
+            <span className="metric-card__label">Land use</span>
             <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)' }}>
-              {type}
+              {typeName}
             </span>
           </div>
         </div>
       </div>
 
-      {/* ML Risk Factor Breakdown */}
-      {(risk === 'HIGH' || risk === 'MEDIUM') && (
-        <div className="panel__section" style={{ padding: '0 20px 20px' }}>
-          <div className="panel__title">ML RISK FACTORS (CLUSTER PREDICTION)</div>
-          <div style={{ background: 'rgba(0,0,0,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.05)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '6px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Population Density (Weight)</span>
-              <span style={{ fontWeight: 600 }}>42%</span>
-            </div>
-            <div style={{ width: '100%', background: 'rgba(0,0,0,0.05)', height: '4px', borderRadius: '2px', marginBottom: '12px' }}>
-              <div style={{ width: '42%', background: 'var(--red-alert)', height: '100%', borderRadius: '2px' }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '6px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Industrial Proximity</span>
-              <span style={{ fontWeight: 600 }}>35%</span>
-            </div>
-            <div style={{ width: '100%', background: 'rgba(0,0,0,0.05)', height: '4px', borderRadius: '2px', marginBottom: '12px' }}>
-              <div style={{ width: '35%', background: 'var(--orange-warm)', height: '100%', borderRadius: '2px' }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '6px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Historical Incident Rate</span>
-              <span style={{ fontWeight: 600 }}>23%</span>
-            </div>
-            <div style={{ width: '100%', background: 'rgba(0,0,0,0.05)', height: '4px', borderRadius: '2px' }}>
-              <div style={{ width: '23%', background: 'var(--blue-vibrant)', height: '100%', borderRadius: '2px' }} />
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="panel__section" style={{ padding: 20 }}>
+        <div className="panel__title">CRIME SCENARIO (SIMULATED)</div>
+        <div style={{fontSize:12}}>Sector crime score: {node.crime_score ?? '—'}/100</div>
+        {(node.crime_reasons || []).map(reason=><div key={reason} style={{fontSize:11}}>{sectorText(reason)}</div>)}
+        {Object.entries(node.risk_features || {}).map(([name, value]) => (
+          <div key={name} style={{ fontSize: 11 }}>{sectorText(name.replaceAll('_', ' '))}: {value}</div>
+        ))}
+        <div style={{ fontSize: 11 }}>Sector-wide opportunity, not an incident at every building.</div>
+        <div style={{ fontSize: 11 }}>Scenario score; not a measured crime probability.</div>
+      </div>
 
       {/* Agent Status */}
       <div className="panel__section" style={{ padding: '0 20px 20px' }}>

@@ -3,7 +3,9 @@
 # Only standard Python libraries + pytest for testing.
 
 pytest>=7.0
-fastapi
+fastapi>=0.115
 uvicorn
-streamlit
 requests
+httpx>=0.28
+httpx2>=2.16
+pygame-ce>=2.5.8
